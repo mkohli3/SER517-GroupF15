@@ -1,24 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React, { useState } from 'react';
+import { Button, Container, CssBaseline, Typography } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import CSVReader from 'react-csv-reader';
+import axios from 'axios';
+
+import ASULogo from './ASU_logo.png'; // Import the image
 
 function App() {
+  const [csvData, setCsvData] = useState(null);
+
+  const handleCsvUpload = (data) => {
+    // Log the CSV data to the console (you can process it further if needed)
+    console.log('CSV Data:', data);
+
+    // Upload the CSV data to the database using an API
+    axios.post('/api/upload-csv', { data })
+      .then(response => {
+        console.log('Upload successful:', response.data);
+      })
+      .catch(error => {
+        console.error('Error uploading CSV:', error);
+      });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Paper elevation={3} style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '400px' }}>
+        <img src={ASULogo} alt="ASU Logo" style={{ height: '80px', marginBottom: '20px' }} />
+        <Typography component="h1" variant="h5">
+          Grading Tool
+        </Typography>
+        <CSVReader onFileLoaded={handleCsvUpload} />
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          color="primary"
+          style={{ margin: '20px 0' }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          Next
+        </Button>
+      </Paper>
+    </Container>
   );
 }
 
