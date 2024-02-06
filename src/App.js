@@ -29,11 +29,11 @@ function App() {
       <CssBaseline />
       <Paper elevation={3} style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '400px' }}>
         <img src={ASULogo} alt="ASU Logo" style={{ height: '80px', marginBottom: '20px' }} />
-        <Typography component="h1" variant="h5"style={{fontSize: '2rem', fontWeight: 'bold', color: '#333',}}>
+        <Typography component="h1" variant="h5"style={{ fontSize: '2rem', fontWeight: 'bold', color: '#333',}}>
           Grading Tool
         </Typography>
         
-        <Typography component="h1" variant="h5"style={{fontSize: '1rem', fontWeight: 'bold', color: '#333',}}>
+        <Typography component="h1" variant="h5"style={{margin: '20px 0' ,fontSize: '1rem', fontWeight: 'bold', color: '#060606',}}>
           Enter grading criteria below
         </Typography>
         <CSVReader onFileLoaded={handleCsvUpload} />
@@ -42,9 +42,21 @@ function App() {
           fullWidth
           variant="contained"
           color="primary"
-          style={{ margin: '20px 0' }}
+          style={{ margin: '5px 0' }}
         >
           Next
+        </Button>
+        <Typography component="h1" variant="h5"style={{fontSize: '2rem', fontWeight: 'bold', color: '#060606',}}>
+          Or
+        </Typography>
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          color="primary"
+          style={{ margin: '10px 0' }}
+        >
+          Enter Grading Criteria Manually
         </Button>
       </Paper>
     </Container>
