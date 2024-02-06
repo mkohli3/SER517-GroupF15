@@ -29,8 +29,12 @@ function App() {
       <CssBaseline />
       <Paper elevation={3} style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '400px' }}>
         <img src={ASULogo} alt="ASU Logo" style={{ height: '80px', marginBottom: '20px' }} />
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h5"style={{fontSize: '2rem', fontWeight: 'bold', color: '#333',}}>
           Grading Tool
+        </Typography>
+        
+        <Typography component="h1" variant="h5"style={{fontSize: '1rem', fontWeight: 'bold', color: '#333',}}>
+          Enter grading criteria below
         </Typography>
         <CSVReader onFileLoaded={handleCsvUpload} />
         <Button
