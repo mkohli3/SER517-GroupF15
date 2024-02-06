@@ -1,22 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React, { useState } from 'react';
+import CSVReader from 'react-csv-reader';
+import axios from 'axios';
+
 
 function App() {
+  const [csvData, setCsvData] = useState(null);
+
+  const handleCsvUpload = (data) => {
+    // Log the CSV data to the console (you can process it further if needed)
+    console.log('CSV Data:', data);
+
+    // Upload the CSV data to the database using an API
+    axios.post('/api/upload-csv', { data })
+      .then(response => {
+        console.log('Upload successful:', response.data);
+      })
+      .catch(error => {
+        console.error('Error uploading CSV:', error);
+      });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <CSVReader onFileLoaded={handleCsvUpload} />
+        
+      
+       
       </header>
     </div>
   );
