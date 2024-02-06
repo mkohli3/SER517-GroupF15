@@ -1,8 +1,11 @@
 // App.js
 import React, { useState } from 'react';
+import { Button, Container, CssBaseline, Typography } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import CSVReader from 'react-csv-reader';
 import axios from 'axios';
 
+import ASULogo from './ASU_logo.png'; // Import the image
 
 function App() {
   const [csvData, setCsvData] = useState(null);
@@ -22,14 +25,25 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Paper elevation={3} style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '400px' }}>
+        <img src={ASULogo} alt="ASU Logo" style={{ height: '80px', marginBottom: '20px' }} />
+        <Typography component="h1" variant="h5">
+          Grading Tool
+        </Typography>
         <CSVReader onFileLoaded={handleCsvUpload} />
-        
-      
-       
-      </header>
-    </div>
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          color="primary"
+          style={{ margin: '20px 0' }}
+        >
+          Next
+        </Button>
+      </Paper>
+    </Container>
   );
 }
 
