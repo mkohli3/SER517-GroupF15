@@ -1,7 +1,6 @@
 import './App.css';
 import React, { useState } from 'react';
 import { Button, Container, CssBaseline, Typography, TextField, FormGroup, FormControlLabel, Checkbox, Paper } from '@mui/material';
-import CSVReader from 'react-csv-reader';
 import axios from 'axios';
 
 import ASULogo from './ASU_logo.png';
@@ -11,15 +10,20 @@ function App() {
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [criteriaList, setCriteriaList] = useState([]);
 
-  const handleCsvUpload = (data) => {
-    console.log('CSV Data:', data);
-    axios.post('/api/upload-csv', { data })
-      .then(response => {
-        console.log('Upload successful:', response.data);
-      })
-      .catch(error => {
-        console.error('Error uploading CSV:', error);
-      });
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === "text/csv") {
+ 
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const contents = e.target.result;
+        console.log('CSV Data:', contents);
+
+      };
+      reader.readAsText(file);
+    } else {
+      alert("Please upload a CSV file.");
+    }
   };
 
   const addCriteria = () => {
@@ -81,7 +85,12 @@ function App() {
             <Typography component="h2" variant="h6" style={{ fontSize: '18px', fontWeight: 'normal', color: '#800000', marginBottom: '20px' }}>
               Enter grading criteria below
             </Typography>
-            <CSVReader onFileLoaded={handleCsvUpload} />
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept=".csv, .xlsx"
+              style={{ margin: '20px 0', display: 'block' }}
+            />
             <Button
               type="button"
               fullWidth
