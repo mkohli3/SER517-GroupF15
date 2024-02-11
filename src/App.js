@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useState } from 'react';
-import { Button, Container, CssBaseline, Typography, TextField, FormGroup, FormControlLabel, Checkbox, Paper } from '@mui/material';
 import axios from 'axios';
+import { Button, Container, CssBaseline, Typography, TextField, FormGroup, FormControlLabel, Checkbox, Paper, LinearProgress } from '@mui/material';
 
 import ASULogo from './ASU_logo.png';
 
@@ -9,22 +9,40 @@ function App() {
   const [csvData, setCsvData] = useState(null);
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [criteriaList, setCriteriaList] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file && file.type === "text/csv") {
- 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const contents = e.target.result;
-        console.log('CSV Data:', contents);
+    if (file) {
+        setIsUploading(true); 
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            
+            const contents = e.target.result;
+            console.log('File Data:', contents);
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                setUploadProgress(progress);
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setIsUploading(false);
+                    setUploadProgress(0); 
+                }
+            }, 200); 
+        };
+     
 
-      };
-      reader.readAsText(file);
+        reader.readAsText(file);
     } else {
-      alert("Please upload a CSV file.");
+        alert("Please upload a file.");
     }
-  };
+};
+
+
 
   const addCriteria = () => {
     setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false }]);
@@ -91,6 +109,9 @@ function App() {
               accept=".csv, .xlsx"
               style={{ margin: '20px 0', display: 'block' }}
             />
+                {isUploading && (
+      <LinearProgress variant="determinate" value={uploadProgress} style={{ width: '100%', margin: '10px 0' }} />
+    )}
             <Button
               type="button"
               fullWidth
