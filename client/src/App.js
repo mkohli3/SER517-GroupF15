@@ -9,6 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<GradingCriteriaUpload />} />
+        // Added a new route for home page
         <Route path='/home' element={<Home />} />
       </Routes>
     </Router>
