@@ -6,9 +6,14 @@ import axios from 'axios';
 import ASULogo from '../utils/ASU_logo.png';
 
 function GradingCriteriaUpload() {
-  const [csvData, setCsvData] = useState(null);
+  const [csvData, setCsvData] = useState(false); //aj
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [criteriaList, setCriteriaList] = useState([]);
+
+//aj
+  const [displayedCsvData, setDisplayedCsvData] = useState(false);
+  const [fileError, setFileError] = useState(""); 
+//aj
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -17,8 +22,8 @@ function GradingCriteriaUpload() {
       const reader = new FileReader();
       reader.onload = function(e) {
         const contents = e.target.result;
-        console.log('CSV Data:', contents);
-
+        //console.log('CSV Data:', contents);
+        setDisplayedCsvData(contents); // Update state to store CSV data aj
       };
       reader.readAsText(file);
     } else {
@@ -26,6 +31,16 @@ function GradingCriteriaUpload() {
     }
   };
 
+  // aj
+  const handleNextButtonClick = () => {
+    if (!displayedCsvData) {
+      setFileError("Please upload a CSV file before proceeding.");
+    } else {
+      setDisplayedCsvData(true);
+      setFileError(""); // Clear file error when proceeding
+    }
+  };
+// aj
   const addCriteria = () => {
     setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false }]);
   };
@@ -91,16 +106,40 @@ function GradingCriteriaUpload() {
               accept=".csv, .xlsx"
               style={{ margin: '20px 0', display: 'block' }}
             />
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={() => setShowManualEntry(false)}
-              style={{ margin: '5px 0' }}
-            >
-              Next
-            </Button>
+            
+{/* //AJ */}
+
+      {/* Display error message if file upload fails */}
+      {fileError && (
+        <Typography variant="body2" color="error" component="p" style={{ marginTop: '10px' }}>
+          {fileError}
+        </Typography>
+      )}
+      
+        {/* Display CSV data on the page */}
+        {displayedCsvData && (
+              <div style={{ margin: '20px 0', whiteSpace: 'pre-line' }}>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  CSV Data:
+                  <br />
+                  {displayedCsvData}
+                </Typography>
+              </div>
+            )}
+
+      {/* Updated Next button to trigger handleNextButtonClick */}
+      <Button
+        type="button"
+        fullWidth
+        variant="contained"
+        color="primary"
+        onClick={handleNextButtonClick}
+        style={{ margin: '5px 0' }}
+      >
+        Next
+      </Button>
+      
+{/* Aj */}
             <Typography component="h1" variant="h5" style={{ fontSize: '16px', fontWeight: 'bold', color: '#800000' }}>
               Or
             </Typography>
