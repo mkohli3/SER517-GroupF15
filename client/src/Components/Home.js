@@ -1,14 +1,17 @@
 import './Home.css';
+import { useNavigate } from 'react-router-dom';
 import ASULogo from '../utils/ASU_logo.png';
 export const Home = () =>
 {
+    const navigate = useNavigate();
+
     const handleExistingSheet = () =>
     {
 
     };
     const handleNewSheet = () =>
     {
-
+        navigate('/new');
     };
     return(
         <div className="home">
