@@ -31,16 +31,16 @@ function GradingCriteriaUpload() {
     }
   };
 
-  // aj
+  // Gives out error message and handles next button
   const handleNextButtonClick = () => {
     if (!displayedCsvData) {
-      setFileError("Please upload a CSV file before proceeding.");
+      setFileError("Please upload a CSV file with grading criteria before proceeding.");
     } else {
       setDisplayedCsvData(true);
-      setFileError(""); // Clear file error when proceeding
+      setFileError("Please proceed to add student details "); // Clear file error when proceeding
     }
   };
-// aj
+  //Handles  the manual entry form submission
   const addCriteria = () => {
     setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false }]);
   };
@@ -133,7 +133,7 @@ function GradingCriteriaUpload() {
         fullWidth
         variant="contained"
         color="primary"
-        onClick={handleNextButtonClick}
+        // onClick={handleNextButtonClick}
         style={{ margin: '5px 0' }}
       >
         Next
