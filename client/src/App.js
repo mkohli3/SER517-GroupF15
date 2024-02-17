@@ -11,6 +11,7 @@ function App() {
         <Route path="/new" element={<GradingCriteriaUpload />} />
         // Updated route for new grading criteria upload
         <Route path='/' element={<Home />} />
+        // Landing page with options for creating/uploading grading sheets
       </Routes>
     </Router>
   );
