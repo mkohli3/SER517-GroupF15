@@ -2,6 +2,7 @@ import '../App.css';
 import React, { useState } from 'react';
 import { Button, Container, CssBaseline, Typography, TextField, FormGroup, FormControlLabel, Checkbox, Paper } from '@mui/material';
 import axios from 'axios';
+import { read, utils } from 'xlsx';
 
 import ASULogo from '../utils/ASU_logo.png';
 
@@ -9,37 +10,52 @@ function GradingCriteriaUpload() {
   const [csvData, setCsvData] = useState(false); //aj
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [criteriaList, setCriteriaList] = useState([]);
+  const [fileData, setFileData] = useState([]);
+  const [hasHeaders, setHasHeaders] = useState(true);
+  const [showPreview, setShowPreview] = useState(true);
 
 //aj
   const [displayedCsvData, setDisplayedCsvData] = useState(false);
   const [fileError, setFileError] = useState(""); 
 //aj
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type === "text/csv") {
- 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const contents = e.target.result;
-        //console.log('CSV Data:', contents);
-        setDisplayedCsvData(contents); // Update state to store CSV data aj
-      };
-      reader.readAsText(file);
-    } else {
-      alert("Please upload a CSV file.");
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (!file) {
+    setFileError("No file selected.");
+    return;
+  }
+  setFileError(""); // Clear any existing error message
+  setShowPreview(true); // Show preview upon new file upload
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = file.name.endsWith('.xlsx') ? new Uint8Array(e.target.result) : e.target.result;
+      const workbook = read(data, {type: file.name.endsWith('.xlsx') ? 'array' : 'binary'});
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json = utils.sheet_to_json(worksheet, {header: 1});
+      setFileData(json);
+    } catch (error) {
+      setFileError("Failed to read file.");
     }
   };
 
-  // aj
-  const handleNextButtonClick = () => {
-    if (!displayedCsvData) {
-      setFileError("Please upload a CSV file before proceeding.");
-    } else {
-      setDisplayedCsvData(true);
-      setFileError(""); // Clear file error when proceeding
-    }
-  };
+  if (file.name.endsWith('.xlsx')) {
+    reader.readAsArrayBuffer(file);
+  } else {
+    reader.readAsBinaryString(file);
+  }
+};
+
+const handleNextButtonClick = () => {
+  if (!fileData.length) { // Check if fileData is empty
+    setFileError("Please upload a file before proceeding.");
+  } else {
+    setShowPreview(false); // Hide preview on clicking Next
+  }
+};
 // aj
   const addCriteria = () => {
     setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false }]);
@@ -50,6 +66,27 @@ function GradingCriteriaUpload() {
     if (field === 'points') value = parseInt(value, 10) || 0;
     newCriteriaList[index][field] = value;
     setCriteriaList(newCriteriaList);
+  };
+  const renderTablePreview = () => {
+    if (!fileData.length || !showPreview) return null; // Only render if there's data and preview is enabled
+    const headers = fileData[0].map((header, index) => typeof header === 'string' ? header : `Column ${index + 1}`);
+    const dataRows = fileData.slice(1);
+    return (
+      <div style={{ overflowX: 'auto', marginTop: '20px', width: '100%' }}>
+        <table style={{ width: '100%', tableLayout: 'fixed' }}>
+          <thead>
+            <tr>{headers.map((header, index) => <th key={index}>{header}</th>)}</tr>
+          </thead>
+          <tbody>
+            {dataRows.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.map((cell, cellIndex) => <td key={cellIndex}>{cell}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   };
 
   const renderCriteriaInputs = () => {
@@ -115,17 +152,12 @@ function GradingCriteriaUpload() {
           {fileError}
         </Typography>
       )}
+       {renderTablePreview()}
       
         {/* Display CSV data on the page */}
-        {displayedCsvData && (
-              <div style={{ margin: '20px 0', whiteSpace: 'pre-line' }}>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  CSV Data:
-                  <br />
-                  {displayedCsvData}
-                </Typography>
-              </div>
-            )}
+        {/* <input type="file" onChange={handleFileChange} accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+        {fileError && <Typography color="error">{fileError}</Typography>}
+        {renderTablePreview()} */}
 
       {/* Updated Next button to trigger handleNextButtonClick */}
       <Button
