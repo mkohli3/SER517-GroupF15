@@ -10,10 +10,10 @@ function GradingCriteriaUpload() {
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [criteriaList, setCriteriaList] = useState([]);
 
-//aj
+// Constants for the CSV file upload and manual entry form
   const [displayedCsvData, setDisplayedCsvData] = useState(false);
   const [fileError, setFileError] = useState(""); 
-//aj
+
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -31,7 +31,7 @@ function GradingCriteriaUpload() {
     }
   };
 
-  // aj
+  // Next button
   const handleNextButtonClick = () => {
     if (!displayedCsvData) {
       setFileError("Please upload a CSV file before proceeding.");
@@ -40,11 +40,12 @@ function GradingCriteriaUpload() {
       setFileError(""); // Clear file error when proceeding
     }
   };
-// aj
+// Add Criteria Button
   const addCriteria = () => {
     setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false }]);
   };
 
+//Update Criteria Button
   const updateCriteria = (index, field, value) => {
     const newCriteriaList = [...criteriaList];
     if (field === 'points') value = parseInt(value, 10) || 0;
@@ -52,6 +53,7 @@ function GradingCriteriaUpload() {
     setCriteriaList(newCriteriaList);
   };
 
+//Rendering Criteria
   const renderCriteriaInputs = () => {
     return criteriaList.map((criteria, index) => (
       <Paper key={index} style={{ padding: '10px', margin: '10px 0', width: '100%' }}>
@@ -127,6 +129,7 @@ function GradingCriteriaUpload() {
               </div>
             )}
 
+      
       {/* Updated Next button to trigger handleNextButtonClick */}
       <Button
         type="button"
@@ -139,6 +142,7 @@ function GradingCriteriaUpload() {
         Next
       </Button>
       
+
 {/* Aj */}
             <Typography component="h1" variant="h5" style={{ fontSize: '16px', fontWeight: 'bold', color: '#800000' }}>
               Or
