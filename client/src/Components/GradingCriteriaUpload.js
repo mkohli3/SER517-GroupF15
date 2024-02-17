@@ -5,6 +5,8 @@ import axios from 'axios';
 import { read, utils } from 'xlsx';
 
 import ASULogo from '../utils/ASU_logo.png';
+import { LinearProgress } from '@mui/material';
+
 
 function GradingCriteriaUpload() {
   const [csvData, setCsvData] = useState(false); //aj
@@ -13,21 +15,45 @@ function GradingCriteriaUpload() {
   const [fileData, setFileData] = useState([]);
   const [hasHeaders, setHasHeaders] = useState(true);
   const [showPreview, setShowPreview] = useState(true);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
 
 //aj
   const [displayedCsvData, setDisplayedCsvData] = useState(false);
   const [fileError, setFileError] = useState(""); 
 //aj
 
-const handleFileChange = (event) => {
+const simulateUpload = (file) => {
+  return new Promise((resolve) => {
+    setIsUploading(true);
+    const totalSteps = 30; // Total steps to complete the "upload"
+    let currentStep = 0;
+
+    const step = () => {
+      setUploadProgress((currentStep / totalSteps) * 100);
+      if (currentStep < totalSteps) {
+        currentStep++;
+        setTimeout(step, 20); // Simulate time taken for each step
+      } else {
+        resolve(); // Resolve the promise once "upload" completes
+      }
+    };
+
+    step();
+  });
+};
+
+
+const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (!file) {
     setFileError("No file selected.");
     return;
   }
+  setIsUploading(true);
   setFileError(""); // Clear any existing error message
   setShowPreview(true); // Show preview upon new file upload
-
+  await simulateUpload(file);
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
@@ -37,8 +63,11 @@ const handleFileChange = (event) => {
       const worksheet = workbook.Sheets[sheetName];
       const json = utils.sheet_to_json(worksheet, {header: 1});
       setFileData(json);
+      setIsUploading(false); // End the upload process
+      setUploadProgress(0); // Reset the progress bar
     } catch (error) {
       setFileError("Failed to read file.");
+      setIsUploading(false);
     }
   };
 
@@ -48,7 +77,6 @@ const handleFileChange = (event) => {
     reader.readAsBinaryString(file);
   }
 };
-
 const handleNextButtonClick = () => {
   if (!fileData.length) { // Check if fileData is empty
     setFileError("Please upload a file before proceeding.");
@@ -160,6 +188,8 @@ const handleNextButtonClick = () => {
         {renderTablePreview()} */}
 
       {/* Updated Next button to trigger handleNextButtonClick */}
+      {isUploading && <LinearProgress variant="determinate" value={uploadProgress} />}
+
       <Button
         type="button"
         fullWidth
