@@ -141,6 +141,17 @@ function GradingCriteriaUpload() {
       >
         Next
       </Button>
+
+      <Button
+        type="button"
+        fullWidth
+        variant="contained"
+        color="primary"
+        //onClick={handleNextButtonClick}
+        style={{ margin: '5px 0' }}
+      >
+        Add students CSV names
+      </Button>
       
 
 {/* Aj */}
