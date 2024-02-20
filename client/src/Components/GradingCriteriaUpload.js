@@ -6,6 +6,7 @@ import { read, utils } from 'xlsx';
 
 import ASULogo from '../utils/ASU_logo.png';
 import { LinearProgress } from '@mui/material';
+import './GradingCriteriaUpload.css'
 
 
 function GradingCriteriaUpload() {
@@ -190,8 +191,9 @@ const handleNextButtonClick = () => {
       {/* Updated Next button to trigger handleNextButtonClick */}
       {isUploading && <LinearProgress variant="determinate" value={uploadProgress} />}
 
-      <Button
+      <button
         type="button"
+        className="button"
         fullWidth
         variant="contained"
         color="primary"
@@ -199,14 +201,15 @@ const handleNextButtonClick = () => {
         style={{ margin: '5px 0' }}
       >
         Next
-      </Button>
+      </button>
       
 {/* Aj */}
             <Typography component="h1" variant="h5" style={{ fontSize: '16px', fontWeight: 'bold', color: '#800000' }}>
               Or
             </Typography>
-            <Button
+            <button
               type="button"
+              className="button"
               fullWidth
               variant="contained"
               color="primary"
@@ -214,24 +217,25 @@ const handleNextButtonClick = () => {
               style={{ margin: '10px 0' }}
             >
               Enter Grading Criteria Manually
-            </Button>
+            </button>
           </>
         )}
         {showManualEntry && (
           <>
             {renderCriteriaInputs()}
-            <Button variant="contained" color="secondary" onClick={addCriteria} style={{ margin: '10px 0' }}>
+            <button variant="contained" color="secondary" onClick={addCriteria} style={{ margin: '10px 0' }}>
               Add Grading Criteria
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
+              className="button"
               variant="contained"
               color="primary"
               onClick={() => console.log('Criteria saved', criteriaList)}
               style={{ margin: '20px 0' }}
             >
               Save Criteria
-            </Button>
+            </button>
           </>
         )}
       </Paper>
