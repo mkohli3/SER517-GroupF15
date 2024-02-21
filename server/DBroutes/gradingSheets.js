@@ -24,4 +24,35 @@ router.post('/create', async (req, res) => {
   }
 });
 
+
+// GET route to fetch all grading sheets
+router.get('/', async (req, res) => {
+  try {
+    const sheets = await GradingSheet.find();
+    res.json(sheets);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// GET route to fetch a single grading sheet by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const sheet = await GradingSheet.findById(req.params.id);
+    if (sheet) {
+      res.json(sheet);
+    } else {
+      res.status(404).json({ message: 'Grading Sheet not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
 module.exports = router;
+
+
+
