@@ -1,5 +1,5 @@
 // Author - Heet Punjawat 
-// server/DBroutes/gradingSheet.js
+// server/DBroutes/gradingSheets.js
 
 const express = require('express');
 const router = express.Router();
