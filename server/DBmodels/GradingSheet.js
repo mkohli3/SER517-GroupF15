@@ -7,7 +7,7 @@ const gradingSheetSchema = new mongoose.Schema({
   title: String,
   students: [{
     serialNo: Number,
-    ASUriteId: Number,
+    ASUriteId: String,
     StudentName: String
   }]
 });

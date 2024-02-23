@@ -7,13 +7,11 @@ const GradingSheet = require('../DBmodels/GradingSheet');
 
 // POST route to create a grading sheet
 router.post('/create', async (req, res) => {
-  const { title, serialNo, ASUriteId, StudentName } = req.body;
+  const { title } = req.body; // Only expect title for sheet creation
   
   const newSheet = new GradingSheet({
     title,
-    serialNo,
-    ASUriteId,
-    StudentName
+    students: [] // Initialize with an empty students array
   });
 
   try {
@@ -50,6 +48,24 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// POST route to add a student to a grading sheet
+router.post('/:id/add-student', async (req, res) => {
+  const { ASUriteId, StudentName } = req.body;
+  try {
+    const sheet = await GradingSheet.findById(req.params.id);
+    if (sheet) {
+      const serialNo = sheet.students.length + 1; // Auto-increment serialNo
+      const newStudent = { serialNo, ASUriteId, StudentName };
+      sheet.students.push(newStudent);
+      await sheet.save();
+      res.status(200).json(sheet);
+    } else {
+      res.status(404).json({ message: 'Grading Sheet not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 
 module.exports = router;
