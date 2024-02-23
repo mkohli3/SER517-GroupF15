@@ -5,9 +5,12 @@ const mongoose = require('mongoose');
 
 const gradingSheetSchema = new mongoose.Schema({
   title: String,
-  serialNo: Number,
-  ASUriteId: String,
-  StudentName: String
+  students: [{
+    serialNo: Number,
+    ASUriteId: Number,
+    StudentName: String
+  }]
 });
+
 
 module.exports = mongoose.model('GradingSheet', gradingSheetSchema);
