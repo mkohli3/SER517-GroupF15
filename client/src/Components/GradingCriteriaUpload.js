@@ -42,6 +42,22 @@ const simulateUpload = (file) => {
     step();
   });
 };
+const saveGradingCriteria = async () => {
+  try {
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/save-criteria`, {
+      title: 'Example Title', // Example static data, replace with your actual data variables
+      serialNo: 1, // Example static data
+      ASUriteId: 'asu123', // Example static data
+      StudentName: 'John Doe', // Example static data
+      gradingCriteria: criteriaList,
+    });
+    console.log('Criteria saved:', response.data);
+    alert('Grading criteria saved successfully!');
+  } catch (error) {
+    console.error('Failed to save grading criteria:', error.response.data);
+    alert('Failed to save grading criteria.');
+  }
+};
 
 
 const handleFileChange = async (event) => {
@@ -84,6 +100,17 @@ const handleNextButtonClick = () => {
     setShowPreview(false); // Hide preview on clicking Next
   }
 };
+const fetchGradingCriteria = async (serialNo) => {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/criteria/${serialNo}`);
+    console.log('Retrieved grading criteria:', response.data);
+    // Update your state or UI based on this data
+  } catch (error) {
+    console.error('Failed to fetch grading criteria:', error.response.data);
+    alert('Failed to fetch grading criteria.');
+  }
+};
+
 // aj
 const addCriteria = () => {
   setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false, hiddenComments: false }]);
@@ -229,14 +256,14 @@ const updateCriteria = (index, field, value) => {
               Add Grading Criteria
             </Button>
             <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              onClick={() => console.log('Criteria saved', criteriaList)}
-              style={{ margin: '20px 0' }}
-            >
-              Save Criteria
-            </Button>
+  type="button"
+  variant="contained"
+  color="primary"
+  onClick={saveGradingCriteria}
+  style={{ margin: '20px 0' }}
+>
+  Save Criteria
+</Button>
           </>
         )}
       </Paper>
