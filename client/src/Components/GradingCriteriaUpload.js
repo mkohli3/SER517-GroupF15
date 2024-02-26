@@ -85,16 +85,17 @@ const handleNextButtonClick = () => {
   }
 };
 // aj
-  const addCriteria = () => {
-    setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false }]);
-  };
-
-  const updateCriteria = (index, field, value) => {
-    const newCriteriaList = [...criteriaList];
-    if (field === 'points') value = parseInt(value, 10) || 0;
-    newCriteriaList[index][field] = value;
-    setCriteriaList(newCriteriaList);
-  };
+const addCriteria = () => {
+  setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false, hiddenComments: false }]);
+};
+const updateCriteria = (index, field, value) => {
+  const newCriteriaList = [...criteriaList];
+  if (field === 'points') value = parseInt(value, 10) || 0;
+  // For checkboxes like group, individual, and hiddenComments
+  else if (field === 'group' || field === 'individual' || field === 'hiddenComments') value = !newCriteriaList[index][field];
+  newCriteriaList[index][field] = value;
+  setCriteriaList(newCriteriaList);
+};
   const renderTablePreview = () => {
     if (!fileData.length || !showPreview) return null; // Only render if there's data and preview is enabled
     const headers = fileData[0].map((header, index) => typeof header === 'string' ? header : `Column ${index + 1}`);
@@ -145,7 +146,11 @@ const handleNextButtonClick = () => {
           <FormControlLabel
             control={<Checkbox checked={criteria.individual} onChange={(e) => updateCriteria(index, 'individual', e.target.checked)} />}
             label="Individual Criteria"
-          />
+          />  
+              <FormControlLabel
+        control={<Checkbox checked={criteria.hiddenComments} onChange={(e) => updateCriteria(index, 'hiddenComments', e.target.checked)} />}
+        label="Hidden Comments"
+      />
         </FormGroup>
       </Paper>
     ));
