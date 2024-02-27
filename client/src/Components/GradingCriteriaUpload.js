@@ -9,6 +9,7 @@ import ASULogo from '../utils/ASU_logo.png';
 import { LinearProgress } from '@mui/material';
 import './GradingCriteriaUpload.css'
 import MainScreen from './MainScreen';
+import CSVTableDisplay from './CSVTableDisplay';
 
 
 
@@ -26,8 +27,13 @@ function GradingCriteriaUpload() {
   const [displayedCsvData, setDisplayedCsvData] = useState(false);
   const [fileError, setFileError] = useState(""); 
 
-
-
+  const renderTablePreview = () => {
+    if (!fileData.length || !displayedCsvData) return null; // Only render if there's data and preview is enabled
+    const headers = fileData[0].map((header, index) => typeof header === 'string' ? header : `Column ${index + 1}`);
+    const dataRows = fileData.slice(1);
+  
+    return <CSVTableDisplay headers={headers} data={fileData} />;
+  };
 
 
 const handleFileChange = async (event) => {
@@ -156,7 +162,11 @@ const handleNextButtonClick = () => {
         </Typography>
       )}
       
+      {renderTablePreview()} {/* Render CSV table preview */}
       
+      {/* Updated Next button to trigger handleNextButtonClick */}
+      {isUploading && <LinearProgress variant="determinate" value={uploadProgress} />}
+
       <button
         type="button"
         className="button"

@@ -1,0 +1,29 @@
+.csv-table-container {
+    margin-top: 20px;
+  }
+  
+  .csv-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .csv-table th,
+  .csv-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .csv-table th {
+    background-color: #8C1D40; /* ASU Maroon */
+    color: #FFC627; /* ASU Gold */
+  }
+  
+  .csv-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .csv-table tr:hover {
+    background-color: #ddd;
+  }
+  
