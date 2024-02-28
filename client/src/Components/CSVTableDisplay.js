@@ -1,9 +1,11 @@
 
-import './CSVTableDisplay.css'; 
+ 
 // CSVTableDisplay.js
 // CSVTableDisplay.js
 
 import React from 'react';
+
+import './CSVTableDisplay.css';
 
 const CSVTableDisplay = ({ headers, data }) => {
   if (!headers.length || !data.length) {

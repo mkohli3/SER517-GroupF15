@@ -1,0 +1,53 @@
+/* MainScreen.css */
+
+.main-screen-table {
+    font-family: Arial, sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .main-screen-table thead {
+    background-color: #8C1D40; /* ASU Maroon */
+    color: #FFC627; /* ASU Gold */
+  }
+  
+  .main-screen-table th,
+  .main-screen-table td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #ddd;
+  }
+  .center-text {
+    text-align: center;
+  }
+  .main-screen-table tr {
+    transition: background-color 0.3s ease;
+  }
+  
+  .main-screen-table tr:hover {
+    background-color: #ddd; /* Hover effect */
+  }
+  
+  .main-screen-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  /* Button styling to match ASU colors */
+  .asu-button {
+    background-color: #8C1D40; /* ASU Maroon */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  
+  .asu-button:hover {
+    background-color: #a53f5d; /* A lighter maroon for hover effect */
+  }
+  
+  /* Typography color for consistency */
+  .asu-typography {
+    color: #8C1D40; /* ASU Maroon */
+  }
+  

@@ -1,15 +1,15 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Button, Container, CssBaseline, Typography, TextField, FormGroup, FormControlLabel, Checkbox, Paper } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import './MainScreen.css'; // Ensure this is imported
 
 const MainScreen = () => {
   const criteriaList = useLocation().state.criteriaList;
-  
 
   return (
     <div>
-      <h2>Grading Criteria Display</h2>
-      <table>
+      <Typography component="h2" variant="h5" className="asu-typography center-text">Grading Criteria Display</Typography>
+      <table className="main-screen-table">
         <thead>
           <tr>
             <th>Criteria Name</th>
@@ -31,9 +31,8 @@ const MainScreen = () => {
         </tbody>
       </table>
 
-              
       <div style={{ position: 'fixed', bottom: '50px', left: '50%', transform: 'translateX(-50%)', margin: '5px 0' }}>
-        <Typography component="h2" variant="h6" style={{ fontSize: '18px', fontWeight: 'normal', color: '#800000' }}>
+        <Typography component="h2" variant="h6" style={{ fontSize: '18px', fontWeight: 'normal', color: '#800000' }} className="asu-typography center-text">
           Enter Student Details Next
         </Typography>
 
@@ -43,6 +42,7 @@ const MainScreen = () => {
           variant="contained"
           color="primary"
           // onClick={handleNextButtonClick}
+          className="asu-button"
           style={{ margin: '5px 0' }}
         >
           Next
