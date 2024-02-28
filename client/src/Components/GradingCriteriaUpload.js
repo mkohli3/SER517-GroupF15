@@ -85,6 +85,14 @@ const handleNextButtonClick = () => {
     
   }
 };
+const handleSaveButtonClick = () => {
+   
+    
+    navigate('/main-screen', { state: { criteriaList : criteriaList } });
+    
+  
+};
+
 // aj
   const addCriteria = () => {
     setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false }]);
@@ -207,7 +215,8 @@ const handleNextButtonClick = () => {
               className="button"
               variant="contained"
               color="primary"
-              onClick={() => console.log('Criteria saved', criteriaList)}
+              onClick={handleSaveButtonClick}
+              //onClick={() => console.log('Criteria saved', criteriaList)}
               style={{ margin: '20px 0' }}
             >
               Save Criteria
