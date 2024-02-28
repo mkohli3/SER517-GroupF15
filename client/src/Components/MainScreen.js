@@ -32,7 +32,7 @@ const MainScreen = () => {
       </table>
 
       <div style={{ position: 'fixed', bottom: '50px', left: '50%', transform: 'translateX(-50%)', margin: '5px 0' }}>
-        <Typography component="h2" variant="h6" style={{ fontSize: '18px', fontWeight: 'normal', color: '#800000' }} className="asu-typography center-text">
+        <Typography component="h2" variant="h6" style={{ fontSize: '18px', fontWeight: 'normal', color: '#800000' }} className="asu-typography">
           Enter Student Details Next
         </Typography>
 
@@ -40,10 +40,15 @@ const MainScreen = () => {
           type="button"
           fullWidth
           variant="contained"
-          color="primary"
-          // onClick={handleNextButtonClick}
-          className="asu-button"
-          style={{ margin: '5px 0' }}
+          // Utilize the sx prop for custom styles
+          sx={{
+            backgroundColor: '#8C1D40', // ASU Maroon
+            color: 'white',
+            '&:hover': {
+              backgroundColor: '#a53f5d', // A lighter maroon for hover effect
+            },
+            margin: '5px 0',
+          }}
         >
           Next
         </Button>
