@@ -1,10 +1,20 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 import './MainScreen.css'; // Ensure this is imported
+import GradingCriteriaUpload from './GradingCriteriaUpload';
+
+
 
 const MainScreen = () => {
   const criteriaList = useLocation().state.criteriaList;
+  const navigate = useNavigate();
+
+  const handleBackButtonClick = () => {
+    navigate('/new' );
+    
+  
+};
 
   return (
     <div>
@@ -35,11 +45,10 @@ const MainScreen = () => {
         <Typography component="h2" variant="h6" style={{ fontSize: '18px', fontWeight: 'normal', color: '#800000' }} className="asu-typography">
           Enter Student Details Next
         </Typography>
-
+        <div style={{ display: 'flex', gap: '5px' }}>  
         <Button
-          type="button"
-          fullWidth
-          variant="contained"
+          type="button" fullWidth
+         variant="contained"
           // Utilize the sx prop for custom styles
           sx={{
             backgroundColor: '#8C1D40', // ASU Maroon
@@ -47,11 +56,29 @@ const MainScreen = () => {
             '&:hover': {
               backgroundColor: '#a53f5d', // A lighter maroon for hover effect
             },
-            margin: '5px 0',
+            margin: '5px 0px',
+          }}
+          onClick={handleBackButtonClick}
+        >
+          Back
+        </Button>
+
+        <Button
+          type="button" fullWidth
+         variant="contained"
+          // Utilize the sx prop for custom styles
+          sx={{
+            backgroundColor: '#8C1D40', // ASU Maroon
+            color: 'white',
+            '&:hover': {
+              backgroundColor: '#a53f5d', // A lighter maroon for hover effect
+            },
+            margin: '5px 0px',
           }}
         >
           Next
         </Button>
+      </div>
       </div>
     </div>
   );
