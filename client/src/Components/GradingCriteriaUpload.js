@@ -44,20 +44,22 @@ const simulateUpload = (file) => {
 };
 const saveGradingCriteria = async () => {
   try {
-    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/save-criteria`, {
-      title: 'Example Title', // Example static data, replace with your actual data variables
-      serialNo: 1, // Example static data
-      ASUriteId: 'asu123', // Example static data
-      StudentName: 'John Doe', // Example static data
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/save-criteria`, {
+      title: 'Example Title',
+      serialNo: 1,
+      ASUriteId: 'asu123',
+      StudentName: 'John Doe',
       gradingCriteria: criteriaList,
     });
+    
     console.log('Criteria saved:', response.data);
     alert('Grading criteria saved successfully!');
   } catch (error) {
-    console.error('Failed to save grading criteria:', error.response.data);
-    alert('Failed to save grading criteria.');
+    console.error('Failed to save grading criteria:', error?.response?.data ? error.response.data : 'Unknown error');
+    alert('Failed to save grading criteria. ' + (error?.response?.data ? error.response.data : 'Please check your network or contact support.'));
   }
 };
+
 
 
 const handleFileChange = async (event) => {
