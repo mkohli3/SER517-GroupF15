@@ -6,7 +6,8 @@ import { read, utils } from 'xlsx';
 
 import ASULogo from '../utils/ASU_logo.png';
 import { LinearProgress } from '@mui/material';
-
+// import ManualEntry from './ManualEntry';
+import { useNavigate } from 'react-router-dom';
 
 function GradingCriteriaUpload() {
   const [csvData, setCsvData] = useState(false); //aj
@@ -17,6 +18,7 @@ function GradingCriteriaUpload() {
   const [showPreview, setShowPreview] = useState(true);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const navigate = useNavigate();
 
 //aj
   const [displayedCsvData, setDisplayedCsvData] = useState(false);
@@ -112,7 +114,9 @@ const fetchGradingCriteria = async (serialNo) => {
     alert('Failed to fetch grading criteria.');
   }
 };
-
+const handleManualEntryClick = () => {
+  navigate('/manual-entry');
+};
 // aj
 const addCriteria = () => {
   setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false, hiddenComments: false }]);
@@ -239,16 +243,9 @@ const updateCriteria = (index, field, value) => {
             <Typography component="h1" variant="h5" style={{ fontSize: '16px', fontWeight: 'bold', color: '#800000' }}>
               Or
             </Typography>
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={() => setShowManualEntry(true)}
-              style={{ margin: '10px 0' }}
-            >
-              Enter Grading Criteria Manually
-            </Button>
+            <Button type="button" variant="contained" color="primary" onClick={handleManualEntryClick} style={{ marginTop: '20px' }}>
+Enter Grading Criteria Manually
+</Button> 
           </>
         )}
         {showManualEntry && (
