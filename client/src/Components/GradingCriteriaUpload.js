@@ -6,7 +6,8 @@ import { read, utils } from 'xlsx';
 
 import ASULogo from '../utils/ASU_logo.png';
 import { LinearProgress } from '@mui/material';
-
+// import ManualEntry from './ManualEntry';
+import { useNavigate } from 'react-router-dom';
 
 function GradingCriteriaUpload() {
   const [csvData, setCsvData] = useState(false); //aj
@@ -17,6 +18,7 @@ function GradingCriteriaUpload() {
   const [showPreview, setShowPreview] = useState(true);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const navigate = useNavigate();
 
 //aj
   const [displayedCsvData, setDisplayedCsvData] = useState(false);
@@ -42,6 +44,24 @@ const simulateUpload = (file) => {
     step();
   });
 };
+const saveGradingCriteria = async () => {
+  try {
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/save-criteria`, {
+      title: 'Example Title',
+      serialNo: 1,
+      ASUriteId: 'asu123',
+      StudentName: 'John Doe',
+      gradingCriteria: criteriaList,
+    });
+    
+    console.log('Criteria saved:', response.data);
+    alert('Grading criteria saved successfully!');
+  } catch (error) {
+    console.error('Failed to save grading criteria:', error?.response?.data ? error.response.data : 'Unknown error');
+    alert('Failed to save grading criteria. ' + (error?.response?.data ? error.response.data : 'Please check your network or contact support.'));
+  }
+};
+
 
 
 const handleFileChange = async (event) => {
@@ -84,17 +104,31 @@ const handleNextButtonClick = () => {
     setShowPreview(false); // Hide preview on clicking Next
   }
 };
+const fetchGradingCriteria = async (serialNo) => {
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/criteria/${serialNo}`);
+    console.log('Retrieved grading criteria:', response.data);
+    // Update your state or UI based on this data
+  } catch (error) {
+    console.error('Failed to fetch grading criteria:', error.response.data);
+    alert('Failed to fetch grading criteria.');
+  }
+};
+const handleManualEntryClick = () => {
+  navigate('/manual-entry');
+};
 // aj
-  const addCriteria = () => {
-    setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false }]);
-  };
-
-  const updateCriteria = (index, field, value) => {
-    const newCriteriaList = [...criteriaList];
-    if (field === 'points') value = parseInt(value, 10) || 0;
-    newCriteriaList[index][field] = value;
-    setCriteriaList(newCriteriaList);
-  };
+const addCriteria = () => {
+  setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false, hiddenComments: false }]);
+};
+const updateCriteria = (index, field, value) => {
+  const newCriteriaList = [...criteriaList];
+  if (field === 'points') value = parseInt(value, 10) || 0;
+  // For checkboxes like group, individual, and hiddenComments
+  else if (field === 'group' || field === 'individual' || field === 'hiddenComments') value = !newCriteriaList[index][field];
+  newCriteriaList[index][field] = value;
+  setCriteriaList(newCriteriaList);
+};
   const renderTablePreview = () => {
     if (!fileData.length || !showPreview) return null; // Only render if there's data and preview is enabled
     const headers = fileData[0].map((header, index) => typeof header === 'string' ? header : `Column ${index + 1}`);
@@ -145,7 +179,11 @@ const handleNextButtonClick = () => {
           <FormControlLabel
             control={<Checkbox checked={criteria.individual} onChange={(e) => updateCriteria(index, 'individual', e.target.checked)} />}
             label="Individual Criteria"
-          />
+          />  
+              <FormControlLabel
+        control={<Checkbox checked={criteria.hiddenComments} onChange={(e) => updateCriteria(index, 'hiddenComments', e.target.checked)} />}
+        label="Hidden Comments"
+      />
         </FormGroup>
       </Paper>
     ));
@@ -205,16 +243,9 @@ const handleNextButtonClick = () => {
             <Typography component="h1" variant="h5" style={{ fontSize: '16px', fontWeight: 'bold', color: '#800000' }}>
               Or
             </Typography>
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={() => setShowManualEntry(true)}
-              style={{ margin: '10px 0' }}
-            >
-              Enter Grading Criteria Manually
-            </Button>
+            <Button type="button" variant="contained" color="primary" onClick={handleManualEntryClick} style={{ marginTop: '20px' }}>
+Enter Grading Criteria Manually
+</Button> 
           </>
         )}
         {showManualEntry && (
@@ -224,14 +255,14 @@ const handleNextButtonClick = () => {
               Add Grading Criteria
             </Button>
             <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              onClick={() => console.log('Criteria saved', criteriaList)}
-              style={{ margin: '20px 0' }}
-            >
-              Save Criteria
-            </Button>
+  type="button"
+  variant="contained"
+  color="primary"
+  onClick={saveGradingCriteria}
+  style={{ margin: '20px 0' }}
+>
+  Save Criteria
+</Button>
           </>
         )}
       </Paper>

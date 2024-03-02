@@ -9,7 +9,8 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 app.use(express.json()); // Middleware to parse JSON bodies
-
+const cors = require('cors');
+app.use(cors());
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost/gradingTool')
   .then(() => console.log('Connected to MongoDB...'))
@@ -22,3 +23,5 @@ app.use('/api/grading-sheets', gradingSheetRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
