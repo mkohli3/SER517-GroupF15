@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import GradingCriteriaUpload from './Components/GradingCriteriaUpload';
 import ManualEntry from './Components/ManualEntry';
@@ -9,9 +9,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<GradingCriteriaUpload />} />
-        // Added a new route for home page
-        <Route path='/home' element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/grading-criteria-upload" element={<GradingCriteriaUpload />} />
         <Route path="/manual-entry" element={<ManualEntry />} />
       </Routes>
     </Router>

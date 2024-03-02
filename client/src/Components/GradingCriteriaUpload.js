@@ -28,16 +28,16 @@ function GradingCriteriaUpload() {
 const simulateUpload = (file) => {
   return new Promise((resolve) => {
     setIsUploading(true);
-    const totalSteps = 30; // Total steps to complete the "upload"
+    const totalSteps = 30; 
     let currentStep = 0;
 
     const step = () => {
       setUploadProgress((currentStep / totalSteps) * 100);
       if (currentStep < totalSteps) {
         currentStep++;
-        setTimeout(step, 20); // Simulate time taken for each step
+        setTimeout(step, 20); 
       } else {
-        resolve(); // Resolve the promise once "upload" completes
+        resolve(); 
       }
     };
 
@@ -71,8 +71,8 @@ const handleFileChange = async (event) => {
     return;
   }
   setIsUploading(true);
-  setFileError(""); // Clear any existing error message
-  setShowPreview(true); // Show preview upon new file upload
+  setFileError(""); 
+  setShowPreview(true); 
   await simulateUpload(file);
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -83,8 +83,8 @@ const handleFileChange = async (event) => {
       const worksheet = workbook.Sheets[sheetName];
       const json = utils.sheet_to_json(worksheet, {header: 1});
       setFileData(json);
-      setIsUploading(false); // End the upload process
-      setUploadProgress(0); // Reset the progress bar
+      setIsUploading(false);
+      setUploadProgress(0); 
     } catch (error) {
       setFileError("Failed to read file.");
       setIsUploading(false);
@@ -98,17 +98,17 @@ const handleFileChange = async (event) => {
   }
 };
 const handleNextButtonClick = () => {
-  if (!fileData.length) { // Check if fileData is empty
+  if (!fileData.length) { 
     setFileError("Please upload a file before proceeding.");
   } else {
-    setShowPreview(false); // Hide preview on clicking Next
+    setShowPreview(false); 
   }
 };
 const fetchGradingCriteria = async (serialNo) => {
   try {
     const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/criteria/${serialNo}`);
     console.log('Retrieved grading criteria:', response.data);
-    // Update your state or UI based on this data
+    
   } catch (error) {
     console.error('Failed to fetch grading criteria:', error.response.data);
     alert('Failed to fetch grading criteria.');
@@ -124,13 +124,13 @@ const addCriteria = () => {
 const updateCriteria = (index, field, value) => {
   const newCriteriaList = [...criteriaList];
   if (field === 'points') value = parseInt(value, 10) || 0;
-  // For checkboxes like group, individual, and hiddenComments
+
   else if (field === 'group' || field === 'individual' || field === 'hiddenComments') value = !newCriteriaList[index][field];
   newCriteriaList[index][field] = value;
   setCriteriaList(newCriteriaList);
 };
   const renderTablePreview = () => {
-    if (!fileData.length || !showPreview) return null; // Only render if there's data and preview is enabled
+    if (!fileData.length || !showPreview) return null; 
     const headers = fileData[0].map((header, index) => typeof header === 'string' ? header : `Column ${index + 1}`);
     const dataRows = fileData.slice(1);
     return (
@@ -212,7 +212,7 @@ const updateCriteria = (index, field, value) => {
             
 {/* //AJ */}
 
-      {/* Display error message if file upload fails */}
+   
       {fileError && (
         <Typography variant="body2" color="error" component="p" style={{ marginTop: '10px' }}>
           {fileError}
