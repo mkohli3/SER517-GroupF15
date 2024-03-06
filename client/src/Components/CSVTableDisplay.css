@@ -1,0 +1,43 @@
+/* CSVTableDisplay.css */
+
+.csv-table {
+  font-family: Arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.csv-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.csv-table th {
+  background-color: #8C1D40; /* ASU Maroon */
+  color: #FFC627; /* ASU Gold */
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.csv-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+/* Hover Effect */
+.csv-table tr:nth-child(even){background-color: #f2f2f2;}
+
+.csv-table tr:hover {
+  background-color: #ddd;
+}
+
+/* Header Styling */
+.csv-table th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.csv-table th:last-child {
+  border-top-right-radius: 10px;
+}

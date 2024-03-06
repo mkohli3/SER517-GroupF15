@@ -1,0 +1,17 @@
+.button {
+    background-color: #8C1D40; /* ASU Maroon */
+    color: #FFC627; /* ASU Gold */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 10px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    transform: scale(1.05);
+    background-color: #FFC627; /* ASU Gold */
+    color: #8C1D40; /* ASU Maroon */
+    border: 1px solid #8C1D40;
+  }
