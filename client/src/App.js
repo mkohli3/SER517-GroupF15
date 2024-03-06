@@ -1,18 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import GradingCriteriaUpload from './Components/GradingCriteriaUpload';
+import ManualEntry from './Components/ManualEntry';
 import { Home } from './Components/Home';
-import MainScreen from './Components/MainScreen';
 
 function App() {
   return (
     <Router>
       <Routes>
-       
-        <Route path='/' element={<Home />} />
-        <Route path="/new" element={<GradingCriteriaUpload />} />
-        <Route path="/main-screen" element={<MainScreen/>} />
+        <Route path="/" element={<Home />} />
+        <Route path="/grading-criteria-upload" element={<GradingCriteriaUpload />} />
+        <Route path="/manual-entry" element={<ManualEntry />} />
       </Routes>
     </Router>
   );
