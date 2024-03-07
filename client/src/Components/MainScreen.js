@@ -24,6 +24,8 @@ const MainScreen = () => {
           <tr>
             <th>Criteria Name</th>
             <th>Points</th>
+            <th>Group Criteria</th>
+            <th>Individual Criteria</th>
           </tr>
         </thead>
         <tbody>
@@ -32,6 +34,8 @@ const MainScreen = () => {
               <tr key={index}>
                 <td>{criteria.criteria}</td>
                 <td>{criteria.points}</td>
+                <td>{criteria.group ? 'Yes' : 'No'}</td>
+                <td>{criteria.individual ? 'Yes' : 'No'}</td>
               </tr>
             ))}
         </tbody>
