@@ -10,7 +10,79 @@
     background-color: #8C1D40; /* ASU Maroon */
     color: #FFC627; /* ASU Gold */
   }
+  /* //Below is CSS for POP up */
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 2px solid #8C1D40; /* ASU Maroon color */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
   
+  .popup-content {
+    text-align: center;
+  }
+  
+  .popup button {
+    background-color: #8C1D40;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .popup button:hover {
+    background-color: #a53f5d; /* Lighter maroon for hover effect */
+  }
+  /* CSS for pop up content is below */
+  .popup-content {
+    text-align: center;
+  }
+  
+  .input-container {
+    margin-bottom: 15px;
+  }
+  
+  .input-container label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .input-container input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 3px;
+    margin-bottom: 10px;
+  }
+  
+  .popup-content button {
+    background-color: #8C1D40;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .popup-content button:hover {
+    background-color: #a53f5d;
+  }
+
+  
+  /*  */
+
+
+
+
+
   .main-screen-table th,
   .main-screen-table td {
     text-align: left;
