@@ -4,39 +4,70 @@ import { Button, Typography } from '@mui/material';
 import './MainScreen.css'; // Ensure this is imported
 import GradingCriteriaUpload from './GradingCriteriaUpload';
 
-const StudentDetailsPopup = ({ isOpen, onClose }) => {
-  return (
-    isOpen && (
-      <div className="popup">
-        <div className="popup-content">
-  <h2>Please Enter Student Details</h2>
-  
-  <div className="input-container">
-    <label htmlFor="asuId">ASU ID:</label>
-    <input type="number" id="asuId" placeholder="Enter ASU ID" />
-  </div>
-
-  <div className="input-container">
-    <label htmlFor="groupName">Group Name:</label>
-    <input type="text" id="groupName" placeholder="Enter Group Name" />
-  </div>
-  <button onClick={onClose}>Add to Details</button>
-  <button onClick={onClose}>Close</button>
-</div>
-      </div>
-    )
-  );
-};
-
-
-
 const MainScreen = () => {
-  const criteriaList = useLocation().state.criteriaList;
+  const [criteriaList, setCriteriaList] = useState([]);
+  const locationState = useLocation().state;
   const navigate = useNavigate();
   const [isPopupOpen, setPopupOpen] = useState(false);
+
+  //Students Details PopUP
+  const StudentDetailsPopup = ({ isOpen, onClose, onAddDetails }) => {
+     onAddDetails = ({ asuId, groupName }) => { 
+      const newCriteria = {
+        groupname: groupName,
+        asuid: asuId,
+      };
+      setCriteriaList((prevList) => [...prevList, newCriteria]);
+    };
+    const [asuId, setAsuId] = useState("");
+    const [groupName, setGroupName] = useState("");
+  
+    const handleAddDetailsButton = () => {
+      onAddDetails({ asuId, groupName });
+      onClose();
+    };
+  
+    return (
+      isOpen && (
+        <div className="popup">
+          <div className="popup-content">
+            <h2>Please Enter Student Details</h2>
+  
+            <div className="input-container">
+              <label htmlFor="asuId">ASU ID:</label>
+              <input
+                type="number"
+                id="asuId"
+                placeholder="Enter ASU ID"
+                value={asuId}
+                onChange={(e) => setAsuId(e.target.value)}
+              />
+            </div>
+  
+            <div className="input-container">
+              <label htmlFor="groupName">Group Name:</label>
+              <input
+                type="text"
+                id="groupName"
+                placeholder="Enter Group Name"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+              />
+            </div>
+  
+            <button onClick={handleAddDetailsButton}>Add to Details</button>
+            <button onClick={onClose}>Close</button>
+          </div>
+        </div>
+      )
+    );
+  };
+  
+
   const handleBackButtonClick = () => {
     navigate('/new' );
 };
+
 const handleStudentDetailsButtonClick = () => {
   setPopupOpen(true);
 };
@@ -115,7 +146,7 @@ const closePopup = () => {
       </div>
       </div>
       {/* Include the StudentDetailsPopup component here */}
-      <StudentDetailsPopup isOpen={isPopupOpen} onClose={closePopup} />
+        <StudentDetailsPopup isOpen={isPopupOpen} onClose={closePopup} />
     </div>
   );
 };
