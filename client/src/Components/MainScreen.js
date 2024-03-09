@@ -92,7 +92,6 @@ const MainScreen = () => {
       [criteria]: value,
     }));
   };
-
   return (
     <div>
       <Typography component="h2" variant="h5" className="asu-typography center-text">
@@ -132,7 +131,6 @@ const MainScreen = () => {
             ))}
         </tbody>
       </table>
-
       <div style={{ position: 'fixed', bottom: '50px', left: '50%', transform: 'translateX(-50%)', margin: '5px 0' }}>
         <div style={{ display: 'flex', gap: '5px' }}>
           <Button
