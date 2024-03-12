@@ -52,15 +52,21 @@ function ManualEntry() {
   const renderCriteriaInputs = () => {
     return criteriaList.map((criteria, index) => (
       // ... (existing code)
-        <TextField
-          label="Points"
-          type="number"
-          variant="outlined"
-          fullWidth
-          value={individualPoints[criteria.studentName] || ''}
-          onChange={(e) => updateIndividualPoints(criteria.studentName, e.target.value)}
-          style={{ marginBottom: '10px' }}
-        />
+      <TableRow key={index}>
+        <TableCell>{criteria.criteria}</TableCell>
+        <TableCell>{criteria.group ? 'GRP' : 'INDV'}</TableCell>
+        <TableCell>
+          <TextField
+            label="Points"
+            type="number"
+            variant="outlined"
+            fullWidth
+            value={individualPoints[criteria.studentName] || ''}
+            onChange={(e) => updateIndividualPoints(criteria.studentName, e.target.value)}
+            style={{ marginBottom: '10px' }}
+          />
+        </TableCell>
+      </TableRow>
       // ... (existing code)
     ));
   };
