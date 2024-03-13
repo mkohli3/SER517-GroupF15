@@ -5,40 +5,44 @@ const express = require('express');
 const router = express.Router();
 const GradingSheet = require('../DBmodels/GradingSheet');
 
-// POST route to create a grading sheet
-// router.post('/create', async (req, res) => {
-//   const { title, serialNo, ASUriteId, StudentName } = req.body;
+// POST Route to create a new grading sheet
+router.post('/create', async (req, res) => {
+  // Extract 'title' from the request body, provided by the user when creating a new grading sheet.
+  const { title } = req.body;
 
-  router.post('/save-criteria', async (req, res) => {
-    const { title, serialNo, ASUriteId, StudentName, gradingCriteria } = req.body;
-  
+  // Creates a new instance of the GradingSheet model using the extracted title.
   const newSheet = new GradingSheet({
     title,
-    serialNo,
-    ASUriteId,
-    StudentName,
-    gradingCriteria
+    gradingCriteria: [], 
+    ASUriteId: [], 
+    StudentName: []
   });
 
   try {
-    const savedSheet = await newSheet.save();
-    res.status(201).json(savedSheet);
+    const savedSheet = await newSheet.save(); // Asynchronously saves the document to the database.
+    res.status(201).json(savedSheet); // Sends the saved document back as a response with status code 201 (Created).
+  } catch (error) {
+    res.status(400).json({ message: error.message }); // Catches and sends any errors that occur.
+  }
+});
+
+// Route to add or update criteria for a specific grading sheet
+router.post('/update-criteria', async (req, res) => {
+  const { id, gradingCriteria } = req.body; // Expect gradingSheet ID and criteria array
+
+  try {
+    const sheet = await GradingSheet.findById(id);
+    if (!sheet) {
+      return res.status(404).json({ message: 'Grading sheet not found' });
+    }
+
+    sheet.gradingCriteria = gradingCriteria;
+    const updatedSheet = await sheet.save();
+
+    res.status(200).json(updatedSheet);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
-
-router.get('/criteria/:serialNo', async (req, res) => {
-  try {
-    const sheet = await GradingSheet.findOne({ serialNo: req.params.serialNo });
-    if (!sheet) {
-      return res.status(404).json({ message: 'Grading sheet not found' });
-    }
-    res.json(sheet.gradingCriteria);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
 
 module.exports = router;
