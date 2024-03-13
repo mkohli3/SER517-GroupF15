@@ -72,10 +72,32 @@ const MainScreen = () => {
       criteriaList.forEach((criteria) => {
         studentPoints[criteria.criteria] = selectedPoints[criteria.criteria];
       });
+     
       return { ...student, points: studentPoints };
+     
+      
     });
     console.log(studentsWithPoints);
     // Add logic to save studentsWithPoints data as needed
+
+    
+  };
+  const handleExportButtonClick = () => {
+    // Handle saving student details along with selected points
+    const studentsWithPoints = studentList.map((student) => {
+      const studentPoints = {};
+      criteriaList.forEach((criteria) => {
+        studentPoints[criteria.criteria] = selectedPoints[criteria.criteria];
+      });
+      Object.entries(studentPoints).forEach(([criteria, points]) => {
+      console.log(`Student with ASU ID ${student.asuid} and group name ${student.groupname} got ${points} points in criteria ${criteria}`);
+      
+        
+      });
+    });
+    
+
+    
   };
 
   const handleStudentDetailsButtonClick = () => {
@@ -164,9 +186,26 @@ const MainScreen = () => {
           >
             Add Student Details
           </Button>
+          <Button
+            type="button"
+            variant="contained"
+            sx={{
+              backgroundColor: '#8C1D40',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#a53f5d',
+              },
+              margin: '3px 0px',
+            }}
+            onClick={handleExportButtonClick}
+          >
+            Export CSV
+          </Button>
         </div>
       </div>
 
+
+            
       <StudentDetailsPopup isOpen={isPopupOpen} onClose={closePopup} />
     </div>
   );
