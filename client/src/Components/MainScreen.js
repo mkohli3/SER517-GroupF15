@@ -108,12 +108,18 @@ const MainScreen = () => {
     setPopupOpen(false);
   };
 
-  const handlePointChange = (criteria, value) => {
+  const handlePointChange = (asuId, criteria, value) => {
     setSelectedPoints((prevPoints) => ({
       ...prevPoints,
-      [criteria]: value,
+      [asuId]: {
+        ...prevPoints[asuId],
+        [criteria]: value,
+      },
     }));
   };
+  
+  
+
   return (
     <div>
       <Typography component="h2" variant="h5" className="asu-typography center-text">
@@ -138,8 +144,8 @@ const MainScreen = () => {
                 {criteriaList.map((criteria, criteriaIndex) => (
                   <td key={criteriaIndex}>
                     <Select
-                      value={selectedPoints[criteria.criteria] || ''}
-                      onChange={(e) => handlePointChange(criteria.criteria, e.target.value)}
+                      value={selectedPoints[student.asuid]?.[criteria.criteria] || ''}
+                      onChange={(e) => handlePointChange(student.asuid, criteria.criteria, e.target.value)}
                     >
                       {[...Array(criteria.points + 1).keys()].map((point) => (
                         <MenuItem key={point} value={point}>
