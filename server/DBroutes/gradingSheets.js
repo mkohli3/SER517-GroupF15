@@ -21,15 +21,13 @@ const upload = multer({
 
 // POST Route to create a new grading sheet
 router.post('/create', async (req, res) => {
-  // Extract 'title' from the request body, provided by the user when creating a new grading sheet.
-  const { title } = req.body;
+  const { title, ASUriteId, StudentName } = req.body; // Correctly extract ASUriteId and StudentName from the request body
 
-  // Creates a new instance of the GradingSheet model using the extracted title.
   const newSheet = new GradingSheet({
     title,
-    gradingCriteria: [], 
-    ASUriteId: { type: String, required: false }, 
-    StudentName: { type: String, required: false }
+    gradingCriteria: [],
+    ASUriteId, 
+    StudentName 
   });
 
   try {
@@ -41,8 +39,9 @@ router.post('/create', async (req, res) => {
 });
 
 // Route to add or update criteria for a specific grading sheet
+
 router.post('/update-criteria', async (req, res) => {
-  const { id, gradingCriteria } = req.body; // Expect gradingSheet ID and criteria array
+  const { id, gradingCriteria } = req.body;
 
   try {
     const sheet = await GradingSheet.findById(id);
@@ -50,6 +49,7 @@ router.post('/update-criteria', async (req, res) => {
       return res.status(404).json({ message: 'Grading sheet not found' });
     }
 
+   
     sheet.gradingCriteria = gradingCriteria;
     const updatedSheet = await sheet.save();
 
