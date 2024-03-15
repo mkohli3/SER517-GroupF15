@@ -5,14 +5,13 @@ import './MainScreen.css'; // Ensure this is imported
 
 const MainScreen = () => {
   const [studentList, setStudentList] = useState([]);
-  const [selectedPoints, setSelectedPoints] = useState({}); // State to track selected points
+  const [selectedPoints, setSelectedPoints] = useState({}); // State to track selected points by group
   const locationState = useLocation().state;
   let criteriaList = locationState.criteriaList;
 
   const navigate = useNavigate();
   const [isPopupOpen, setPopupOpen] = useState(false);
 
-  // Students Details PopUP
   const StudentDetailsPopup = ({ isOpen, onClose, onAddDetails }) => {
     onAddDetails = ({ asuId, groupName }) => {
       const newStudent = {
@@ -34,7 +33,6 @@ const MainScreen = () => {
         <div className="popup">
           <div className="popup-content">
             <h2>Please Enter Student Details</h2>
-
             <div className="input-container">
               <label htmlFor="asuId">ASU ID:</label>
               <input
@@ -45,7 +43,6 @@ const MainScreen = () => {
                 onChange={(e) => setAsuId(e.target.value)}
               />
             </div>
-
             <div className="input-container">
               <label htmlFor="groupName">Group Name:</label>
               <input
@@ -56,7 +53,6 @@ const MainScreen = () => {
                 onChange={(e) => setGroupName(e.target.value)}
               />
             </div>
-
             <button onClick={handleAddDetailsButton}>Add to Details</button>
             <button onClick={onClose}>Close</button>
           </div>
@@ -66,16 +62,7 @@ const MainScreen = () => {
   };
 
   const handleSaveButtonClick = () => {
-    // Handle saving student details along with selected points
-    const studentsWithPoints = studentList.map((student) => {
-      const studentPoints = {};
-      criteriaList.forEach((criteria) => {
-        studentPoints[criteria.criteria] = selectedPoints[criteria.criteria];
-      });
-      return { ...student, points: studentPoints };
-    });
-    console.log(studentsWithPoints);
-    // Add logic to save studentsWithPoints data as needed
+    console.log("Saving data is specific to the application's backend implementation.");
   };
 
   const handleStudentDetailsButtonClick = () => {
@@ -86,12 +73,16 @@ const MainScreen = () => {
     setPopupOpen(false);
   };
 
-  const handlePointChange = (criteria, value) => {
+  const handlePointChange = (groupName, criteria, value) => {
     setSelectedPoints((prevPoints) => ({
       ...prevPoints,
-      [criteria]: value,
+      [groupName]: {
+        ...prevPoints[groupName],
+        [criteria]: value,
+      },
     }));
   };
+
   return (
     <div>
       <Typography component="h2" variant="h5" className="asu-typography center-text">
@@ -116,8 +107,8 @@ const MainScreen = () => {
                 {criteriaList.map((criteria, criteriaIndex) => (
                   <td key={criteriaIndex}>
                     <Select
-                      value={selectedPoints[criteria.criteria] || ''}
-                      onChange={(e) => handlePointChange(criteria.criteria, e.target.value)}
+                      value={(selectedPoints[student.groupname] && selectedPoints[student.groupname][criteria.criteria]) || ''}
+                      onChange={(e) => handlePointChange(student.groupname, criteria.criteria, e.target.value)}
                     >
                       {[...Array(criteria.points + 1).keys()].map((point) => (
                         <MenuItem key={point} value={point}>
