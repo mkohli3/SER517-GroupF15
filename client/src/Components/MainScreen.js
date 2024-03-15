@@ -63,13 +63,24 @@ const MainScreen = () => {
   };
 
   const handleSaveButtonClick = () => {
-    // Logic to save studentsWithPoints data as needed
-    console.log("Implement save functionality based on the application's needs.");
+    
+    const studentsWithPoints = studentList.map((student) => {
+      const points = selectedPoints[student.groupname] || {};
+      return { ...student, points };
+    });
+    console.log('Data to save:', studentsWithPoints);
+    
   };
 
   // Implementing the function to handle exporting data to CSV
   const handleExportButtonClick = () => {
-    console.log("Implement export to CSV functionality.");
+    
+    const dataToExport = studentList.map((student) => {
+      const points = selectedPoints[student.groupname] || {};
+      return { ...student, points };
+    });
+    console.log('Data to export:', dataToExport);
+   
   };
 
   const handleStudentDetailsButtonClick = () => {
