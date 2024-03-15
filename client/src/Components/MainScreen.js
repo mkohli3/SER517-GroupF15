@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Typography, Select, MenuItem } from '@mui/material';
-import './MainScreen.css'; // Ensure this is imported
+import './MainScreen.css'; 
 
 const MainScreen = () => {
   const [studentList, setStudentList] = useState([]);
-  const [selectedPoints, setSelectedPoints] = useState({}); // State to track selected points by group
+  // State to track selected points by group
+  const [selectedPoints, setSelectedPoints] = useState({});
   const locationState = useLocation().state;
   let criteriaList = locationState.criteriaList;
 
@@ -62,7 +63,13 @@ const MainScreen = () => {
   };
 
   const handleSaveButtonClick = () => {
-    console.log("Saving data is specific to the application's backend implementation.");
+    // Logic to save studentsWithPoints data as needed
+    console.log("Implement save functionality based on the application's needs.");
+  };
+
+  // Implementing the function to handle exporting data to CSV
+  const handleExportButtonClick = () => {
+    console.log("Implement export to CSV functionality.");
   };
 
   const handleStudentDetailsButtonClick = () => {
@@ -154,6 +161,22 @@ const MainScreen = () => {
             onClick={handleStudentDetailsButtonClick}
           >
             Add Student Details
+          </Button>
+
+          <Button
+            type="button"
+            variant="contained"
+            sx={{
+              backgroundColor: '#8C1D40',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#a53f5d',
+              },
+              margin: '3px 0px',
+            }}
+            onClick={handleExportButtonClick}
+          >
+            Export CSV
           </Button>
         </div>
       </div>
