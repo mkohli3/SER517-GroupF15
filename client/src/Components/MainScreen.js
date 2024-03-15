@@ -68,9 +68,65 @@ const MainScreen = () => {
   };
 
   // Implementing the function to handle exporting data to CSV
+ 
   const handleExportButtonClick = () => {
-    console.log("Implement export to CSV functionality.");
+    // Combine all data and export as CSV
+    const combinedData = combineData(criteriaList, studentList, selectedPoints);
+    const csvContent = convertToCsv(combinedData);
+
+    // Trigger download
+    downloadCsv(csvContent, 'combinedData.csv');
   };
+
+  const combineData = (criteriaList, studentList, selectedPoints) => {
+    const combinedData = [];
+  
+    // Add header row with Group Name and ASU ID first
+    const headerRow = {'Group Name': 'Group Name', 'ASU ID': 'ASU ID' };
+    criteriaList.forEach(criteria => {
+      headerRow[criteria.criteria] = criteria.criteria;
+    });
+    combinedData.push(headerRow);
+  
+    // Add student details and their corresponding points
+    studentList.forEach(student => {
+      const rowData = { 'Group Name': student.groupname, 'ASU ID': student.asuid };
+      criteriaList.forEach(criteria => {
+        rowData[criteria.criteria] = selectedPoints[student.asuid]?.[criteria.criteria] || 0;
+      });
+      combinedData.push(rowData);
+    });
+  
+    return combinedData;
+  };
+  
+
+  const convertToCsv = (data) => {
+    const csv = data.map((row) => Object.values(row).join(',')).join('\n');
+    return csv;
+  };
+
+  // Function to trigger download of CSV file
+  const downloadCsv = (csvContent, fileName) => {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) {
+      // IE 10+
+      navigator.msSaveBlob(blob, fileName);
+    } else {
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
+        // feature detection
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  };
+
+
 
   const handleStudentDetailsButtonClick = () => {
     setPopupOpen(true);
