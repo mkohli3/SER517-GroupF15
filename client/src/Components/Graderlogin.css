@@ -1,0 +1,45 @@
+.grader-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #fff;
+  }
+  
+  .grader-login form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .grader-login label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .grader-login input {
+    padding: 8px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .grader-login button {
+    padding: 10px 20px;
+    background-color: #990033; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .grader-login button:hover {
+    background-color: #bb3355;
+  }
+  

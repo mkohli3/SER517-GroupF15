@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Graderlogin.css';
 
 const GraderLogin = () => {
     const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ const GraderLogin = () => {
     };
     
     return (
-        <div>
+        <div className="grader-login">
             <form onSubmit={handleLogin}>
                 <label htmlFor="email">ASU Email:</label>
                 <input
