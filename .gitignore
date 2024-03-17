@@ -23,3 +23,5 @@ yarn-error.log*
 # Ignore node_modules in client and server directories
 /client/node_modules
 /server/node_modules
+/node_modules
+node_modules/

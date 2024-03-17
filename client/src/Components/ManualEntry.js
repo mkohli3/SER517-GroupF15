@@ -8,14 +8,25 @@ import ASULogo from '../utils/ASU_logo.png';
 function ManualEntry() {
   const [criteriaList, setCriteriaList] = useState([]);
 
+  // New state to track individual points for each student
+  const [individualPoints, setIndividualPoints] = useState({});
+
   const addCriteria = () => {
-    setCriteriaList([...criteriaList, { criteria: "", points: 0, group: false, individual: false, hiddenComments: false }]);
+    setCriteriaList([...criteriaList, { criteria: "", group: false, individual: false, hiddenComments: false }]);
   };
 
   const updateCriteria = (index, field, value) => {
     const newCriteriaList = [...criteriaList];
     newCriteriaList[index][field] = value;
     setCriteriaList(newCriteriaList);
+  };
+
+  // New function to update individual points
+  const updateIndividualPoints = (studentName, points) => {
+    setIndividualPoints((prevPoints) => ({
+      ...prevPoints,
+      [studentName]: points,
+    }));
   };
 
   const saveGradingCriteria = async () => {
@@ -26,6 +37,8 @@ function ManualEntry() {
         ASUriteId: 'asu123',
         StudentName: 'John Doe',
         gradingCriteria: criteriaList,
+        // Pass the individual points to the backend
+        individualPoints,
       });
       
       console.log('Criteria saved:', response.data);
@@ -35,45 +48,29 @@ function ManualEntry() {
       alert('Failed to save grading criteria. ' + (error?.response?.data ? error.response.data : 'Please check your network or contact support.'));
     }
   };
-  
 
   const renderCriteriaInputs = () => {
     return criteriaList.map((criteria, index) => (
-      <Paper key={index} style={{ padding: '10px', margin: '10px 0', width: '100%' }}>
-        <TextField
-          label="Criteria Name"
-          variant="outlined"
-          fullWidth
-          value={criteria.criteria}
-          onChange={(e) => updateCriteria(index, 'criteria', e.target.value)}
-          style={{ marginBottom: '10px' }}
-        />
-        <TextField
-          label="Points"
-          type="number"
-          variant="outlined"
-          fullWidth
-          value={criteria.points}
-          onChange={(e) => updateCriteria(index, 'points', e.target.value)}
-          style={{ marginBottom: '10px' }}
-        />
-        <FormGroup row>
-          <FormControlLabel
-            control={<Checkbox checked={criteria.group} onChange={(e) => updateCriteria(index, 'group', e.target.checked)} />}
-            label="Group Criteria"
+      // ... (existing code)
+      <TableRow key={index}>
+        <TableCell>{criteria.criteria}</TableCell>
+        <TableCell>{criteria.group ? 'GRP' : 'INDV'}</TableCell>
+        <TableCell>
+          <TextField
+            label="Points"
+            type="number"
+            variant="outlined"
+            fullWidth
+            value={individualPoints[criteria.studentName] || ''}
+            onChange={(e) => updateIndividualPoints(criteria.studentName, e.target.value)}
+            style={{ marginBottom: '10px' }}
           />
-          <FormControlLabel
-            control={<Checkbox checked={criteria.individual} onChange={(e) => updateCriteria(index, 'individual', e.target.checked)} />}
-            label="Individual Criteria"
-          />  
-              <FormControlLabel
-        control={<Checkbox checked={criteria.hiddenComments} onChange={(e) => updateCriteria(index, 'hiddenComments', e.target.checked)} />}
-        label="Hidden Comments"
-      />
-        </FormGroup>
-      </Paper>
+        </TableCell>
+      </TableRow>
+      // ... (existing code)
     ));
   };
+
 
   return (
     <Container component="main" maxWidth="xs">
