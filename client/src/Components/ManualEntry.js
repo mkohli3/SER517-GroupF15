@@ -1,18 +1,15 @@
-// ManualEntry.js
 import React, { useState } from 'react';
-import { Button, Container, CssBaseline, Typography, TextField, FormGroup, FormControlLabel, Checkbox, Paper } from '@mui/material';
+import { Button, Container, CssBaseline, Typography, TextField, Paper, TableRow, TableCell } from '@mui/material';
 import axios from 'axios';
 
 import ASULogo from '../utils/ASU_logo.png';
 
 function ManualEntry() {
   const [criteriaList, setCriteriaList] = useState([]);
-
-  // New state to track individual points for each student
   const [individualPoints, setIndividualPoints] = useState({});
 
   const addCriteria = () => {
-    setCriteriaList([...criteriaList, { criteria: "", group: false, individual: false, hiddenComments: false }]);
+    setCriteriaList([...criteriaList, { id: Date.now(), criteria: "", group: false, individual: false, hiddenComments: false }]);
   };
 
   const updateCriteria = (index, field, value) => {
@@ -21,12 +18,13 @@ function ManualEntry() {
     setCriteriaList(newCriteriaList);
   };
 
-  // New function to update individual points
-  const updateIndividualPoints = (studentName, points) => {
-    setIndividualPoints((prevPoints) => ({
-      ...prevPoints,
-      [studentName]: points,
-    }));
+  const updateIndividualPoints = (criteriaId, points, isIndividual) => {
+    if (isIndividual) {
+      setIndividualPoints((prevPoints) => ({
+        ...prevPoints,
+        [criteriaId]: points,
+      }));
+    }
   };
 
   const saveGradingCriteria = async () => {
@@ -37,10 +35,9 @@ function ManualEntry() {
         ASUriteId: 'asu123',
         StudentName: 'John Doe',
         gradingCriteria: criteriaList,
-        // Pass the individual points to the backend
         individualPoints,
       });
-      
+
       console.log('Criteria saved:', response.data);
       alert('Grading criteria saved successfully!');
     } catch (error) {
@@ -51,8 +48,7 @@ function ManualEntry() {
 
   const renderCriteriaInputs = () => {
     return criteriaList.map((criteria, index) => (
-      // ... (existing code)
-      <TableRow key={index}>
+      <TableRow key={criteria.id}>
         <TableCell>{criteria.criteria}</TableCell>
         <TableCell>{criteria.group ? 'GRP' : 'INDV'}</TableCell>
         <TableCell>
@@ -61,13 +57,12 @@ function ManualEntry() {
             type="number"
             variant="outlined"
             fullWidth
-            value={individualPoints[criteria.studentName] || ''}
-            onChange={(e) => updateIndividualPoints(criteria.studentName, e.target.value)}
+            value={individualPoints[criteria.id] || ''}
+            onChange={(e) => updateIndividualPoints(criteria.id, e.target.value, criteria.individual)}
             style={{ marginBottom: '10px' }}
           />
         </TableCell>
       </TableRow>
-      // ... (existing code)
     ));
   };
 
@@ -93,14 +88,3 @@ function ManualEntry() {
 }
 
 export default ManualEntry;
-
-
-//  <Button type="button" variant="contained" color="primary" onClick={handleManualEntryClick} style={{ marginTop: '20px' }}>
-// Enter Grading Criteria Manually
-// </Button> 
-
-
-
-// const handleManualEntryClick = () => {
-//     navigate('/manual-entry');
-// };
