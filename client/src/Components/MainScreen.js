@@ -12,6 +12,13 @@ const MainScreen = () => {
 
   const navigate = useNavigate();
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isEditPopupOpen, setEditPopupOpen] = useState(false);
+const [editingCriteriaIndex, setEditingCriteriaIndex] = useState(null);
+
+const handleEditButtonClick = (index) => {
+  setEditingCriteriaIndex(index);
+  setEditPopupOpen(true);
+};
 
   const StudentDetailsPopup = ({ isOpen, onClose, onAddDetails }) => {
     onAddDetails = ({ asuId, groupName }) => {
@@ -28,7 +35,8 @@ const MainScreen = () => {
       onAddDetails({ asuId, groupName });
       onClose();
     };
-
+    
+    
     return (
       isOpen && (
         <div className="popup">
@@ -71,8 +79,6 @@ const MainScreen = () => {
     console.log('Data to save:', studentsWithPoints);
     
   };
-
-  // Implementing the function to handle exporting data to CSV
  
   const handleExportButtonClick = () => {
     
@@ -101,6 +107,54 @@ const MainScreen = () => {
       },
     }));
   };
+  const EditCriteriaPopup = ({ isOpen, onClose, criteriaIndex, criteriaList, onSave }) => {
+    const [editedCriteria, setEditedCriteria] = useState({ ...criteriaList[criteriaIndex] });
+  
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setEditedCriteria((prevCriteria) => ({
+        ...prevCriteria,
+        [name]: value,
+      }));
+    };
+  
+    const handleSave = () => {
+      onSave(editedCriteria);
+    };
+  
+    return (
+      isOpen && (
+        <div className="popup">
+          <div className="popup-content">
+            <h2>Edit Comments</h2>
+            <div className="input-container">
+              <label htmlFor="criteriaPoints">Points:</label>
+              <input
+                type="number"
+                id="criteriaPoints"
+                name="points"
+                value={editedCriteria.points}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="input-container">
+            <label htmlFor="criteriaComments">Comments:</label>
+            <textarea
+              id="criteriaComments"
+              name="comments"
+              value={editedCriteria.comments}
+              onChange={handleInputChange}
+              rows={4}
+              cols={50}
+            />
+          </div>
+            <button onClick={handleSave}>Save</button>
+            <button onClick={onClose}>Cancel</button>
+          </div>
+        </div>
+      )
+    );
+  };
 
   return (
     <div>
@@ -113,9 +167,19 @@ const MainScreen = () => {
             <th>Group Name</th>
             <th>ASU Id</th>
             {criteriaList.map((criteria, index) => (
-              <th key={index}>{criteria.criteria}</th>
-            ))}
+      <React.Fragment key={index}>
+        <th>{criteria.criteria}
+        
+          <button 
+            onClick={() =>  handleEditButtonClick(index)}
+          >
+            Edit
+          </button>
+        </th>
+        </React.Fragment>
+        ))}
           </tr>
+          
         </thead>
         <tbody>
           {studentList &&
@@ -141,58 +205,42 @@ const MainScreen = () => {
             ))}
         </tbody>
       </table>
+
+      
       <div style={{ position: 'fixed', bottom: '50px', left: '50%', transform: 'translateX(-50%)', margin: '5px 0' }}>
         <div style={{ display: 'flex', gap: '5px' }}>
-          <Button
-            type="button"
-            variant="contained"
-            sx={{
-              backgroundColor: '#8C1D40',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#a53f5d',
-              },
-              margin: '3px 0px',
-            }}
+          <button
             onClick={handleSaveButtonClick}
           >
             Save
-          </Button>
+          </button>
 
-          <Button
-            type="button"
-            variant="contained"
-            sx={{
-              backgroundColor: '#8C1D40',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#a53f5d',
-              },
-              margin: '3px 0px',
-            }}
+          <button
             onClick={handleStudentDetailsButtonClick}
           >
             Add Student Details
-          </Button>
+          </button>
 
-          <Button
-            type="button"
-            variant="contained"
-            sx={{
-              backgroundColor: '#8C1D40',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#a53f5d',
-              },
-              margin: '3px 0px',
-            }}
+          <button
             onClick={handleExportButtonClick}
           >
             Export CSV
-          </Button>
+          </button>
         </div>
       </div>
-
+      {isEditPopupOpen && (
+  <EditCriteriaPopup
+    isOpen={isEditPopupOpen}
+    onClose={() => setEditPopupOpen(false)}
+    criteriaIndex={editingCriteriaIndex}
+    criteriaList={criteriaList}
+    onSave={(editedCriteria) => {
+      // Handle saving the edited criteria
+      console.log("Edited criteria:", editedCriteria);
+      setEditPopupOpen(false);
+    }}
+  />
+)}
       <StudentDetailsPopup isOpen={isPopupOpen} onClose={closePopup} />
     </div>
   );

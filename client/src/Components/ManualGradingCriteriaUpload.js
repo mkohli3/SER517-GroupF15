@@ -31,7 +31,7 @@ const handleSaveButtonClick = () => {
       <CssBaseline />
       <Paper elevation={3} style={{ padding: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px' }}>
         
-
+{/* 
         <TextField
           label="Points"
           type="number"
@@ -39,6 +39,14 @@ const handleSaveButtonClick = () => {
           fullWidth
           value={criteria.points}
           onChange={(e) => updateCriteria(index, 'points', e.target.value)}
+          style={{ marginBottom: '10px' }}
+        /> */}
+        <TextField
+          label="Criteria Name"
+          variant="outlined"
+          fullWidth
+          value={criteria.criteria}
+          onChange={(e) => updateCriteria(index, 'criteria', e.target.value)}
           style={{ marginBottom: '10px' }}
         />
         <FormGroup row>
@@ -93,7 +101,7 @@ const handleSaveButtonClick = () => {
             }}
             onClick={addCriteria}
           >
-            Add Student Details
+            Add New Criteria
           </Button>
 
         </div>
