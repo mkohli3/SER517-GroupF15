@@ -9,21 +9,53 @@ function ManualGradingCriteriaUpload() {
   const [criteriaList, setCriteriaList] = useState([]);
   const navigate = useNavigate();
 
-  const updateCriteria = (index, key, value) => {
-    const updatedCriteriaList = [...criteriaList];
-    updatedCriteriaList[index][key] = value;
-    setCriteriaList(updatedCriteriaList);
+  const updateCriteria = (criteriaIndex, key, value) => {
+    setCriteriaList((prevList) =>
+      prevList.map((criterion, i) => {
+        if (i === criteriaIndex) {
+          return { ...criterion, [key]: value };
+        } else {
+          return criterion;
+        }
+      })
+    );
   };
+  
+  const updateDeductions = (criteriaIndex, deductionIndex, key, value) => {
+    setCriteriaList((prevList) =>
+      prevList.map((criterion, i) => {
+        if (i === criteriaIndex) {
+          return {
+            ...criterion,
+            deductions: criterion.deductions.map((deduction, j) =>
+              j === deductionIndex ? { ...deduction, [key]: value } : deduction
+            ),
+          };
+        } else {
+          return criterion;
+        }
+      })
+    );
+  };
+  
+
+
 
   const addCriteria = () => {
-    setCriteriaList([...criteriaList, { criteria: '', points: '', deductions: [] }]);
+    setCriteriaList([
+      ...criteriaList,
+      { criteria: '', points: '', deductions: [] },
+    ]);
   };
 
-  const addDeduction = (index) => {
+  const addDeduction = (criteriaIndex) => {
     const updatedCriteriaList = [...criteriaList];
-    updatedCriteriaList[index].deductions.push({ points: '', comment: '' });
+    updatedCriteriaList[criteriaIndex].deductions.push({ points: '', comment: '' });
     setCriteriaList(updatedCriteriaList);
   };
+  
+
+
 
   const removeDeduction = (criteriaIndex, deductionIndex) => {
     const updatedCriteriaList = [...criteriaList];
@@ -32,12 +64,19 @@ function ManualGradingCriteriaUpload() {
   };
 
   const handleSaveButtonClick = () => {
+    console.log(criteriaList)
     navigate('/main-screen', { state: { criteriaList: criteriaList } });
   };
 
+ 
+
+ 
+  
+
+
   const renderCriteriaInputs = () => {
-    return criteriaList.map((criteria, index) => (
-      <Container key={index} component="main" maxWidth="xs">
+    return criteriaList.map((criteria, criteriaIndex) => (
+      <Container key={criteriaIndex} component="main" maxWidth="xs">
         <CssBaseline />
         <Paper elevation={3} style={{ padding: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px' }}>
           <TextField
@@ -45,7 +84,7 @@ function ManualGradingCriteriaUpload() {
             variant="outlined"
             fullWidth
             value={criteria.criteria}
-            onChange={(e) => updateCriteria(index, 'criteria', e.target.value)}
+            onChange={(e) => updateCriteria(criteriaIndex, 'criteria', e.target.value)}
             style={{ marginBottom: '10px' }}
           />
           <TextField
@@ -54,17 +93,19 @@ function ManualGradingCriteriaUpload() {
             variant="outlined"
             fullWidth
             value={criteria.points}
-            onChange={(e) => updateCriteria(index, 'points', e.target.value)}
+            onChange={(e) => updateCriteria(criteriaIndex, 'points', e.target.value)}
             style={{ marginBottom: '10px' }}
           />
+          
           {criteria.deductions.map((deduction, deductionIndex) => (
             <div key={deductionIndex} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              
               <TextField
                 label={`Deduction ${deductionIndex + 1} Points`}
                 type="number"
                 variant="outlined"
                 value={deduction.points}
-                onChange={(e) => updateCriteria(index, `deductions[${deductionIndex}].points`, e.target.value)}
+                onChange={(e) => updateDeductions(criteriaIndex,deductionIndex, 'points', e.target.value)}
                 style={{ marginBottom: '10px' }}
               />
               <TextField
@@ -72,17 +113,17 @@ function ManualGradingCriteriaUpload() {
                 variant="outlined"
                 fullWidth
                 value={deduction.comment}
-                onChange={(e) => updateCriteria(index, `deductions[${deductionIndex}].comment`, e.target.value)}
+                onChange={(e) => updateDeductions(criteriaIndex, deductionIndex, 'comment', e.target.value, deductionIndex)}
                 style={{ marginBottom: '10px' }}
               />
-              <IconButton onClick={() => removeDeduction(index, deductionIndex)}>
+              <IconButton onClick={() => removeDeduction(criteriaIndex, deductionIndex)}>
                 <DeleteIcon />
               </IconButton>
             </div>
           ))}
           <Button
             variant="contained"
-            onClick={() => addDeduction(index)}
+            onClick={() => addDeduction(criteriaIndex)}
           >
             Add Deduction
           </Button>
@@ -90,6 +131,9 @@ function ManualGradingCriteriaUpload() {
       </Container>
     ));
   };
+  
+
+
 
   return (
     <>
