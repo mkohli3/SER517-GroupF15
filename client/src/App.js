@@ -6,6 +6,8 @@ import { Home } from './Components/Home';
 import MainScreen from './Components/MainScreen';
 import GraderLogin from './Components/Graderlogin';
 import InitialView from './Components/InitialView';
+import CSVUpdate from './Components/CSVUpdate';
+import ManualGradingCriteriaUpload from './Components/ManualGradingCriteriaUpload';
 function App() {
   return (
     <Router>
@@ -15,7 +17,10 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/new" element={<GradingCriteriaUpload />} />
         <Route path="/main-screen" element={<MainScreen/>} />
+        <Route path="/Manual-Entry-Page" element={<ManualGradingCriteriaUpload/>} />
+        <Route path="/CSV-Upload-Page" element={<CSVUpdate/>} />
         <Route path="/grader-login" element={<GraderLogin />} />
+
       </Routes>
     </Router>
   );
