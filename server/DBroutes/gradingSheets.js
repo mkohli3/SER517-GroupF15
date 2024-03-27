@@ -21,10 +21,9 @@ const upload = multer({
 
 // POST Route to create a new grading sheet
 router.post('/create', async (req, res) => {
-  const { title, ASUriteId, StudentName } = req.body; // Correctly extract ASUriteId and StudentName from the request body
+  const {ASUriteId, StudentName } = req.body; // Correctly extract ASUriteId and StudentName from the request body
 
   const newSheet = new GradingSheet({
-    title,
     gradingCriteria: [],
     ASUriteId, 
     StudentName 
@@ -58,7 +57,15 @@ router.post('/update-criteria', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-
+router.post('/save', async (req, res) => {
+  const studentsData = req.body;
+  try {
+    const savedData = await GradingSheet.insertMany(studentsData);
+    res.status(201).json(savedData);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 // Route to handle Excel file upload and import grading criteria
 router.post('/import-criteria', upload.single('excelFile'), async (req, res) => {
   if (!req.file) {

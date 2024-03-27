@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Typography, Select, MenuItem } from '@mui/material';
 import './MainScreen.css'; 
 
+import axios from 'axios';
+
 const MainScreen = () => {
   const [studentList, setStudentList] = useState([]);
   // State to track selected points by group
@@ -70,14 +72,18 @@ const handleEditButtonClick = (index) => {
     );
   };
 
-  const handleSaveButtonClick = () => {
-    
+  const handleSaveButtonClick = async () => {
     const studentsWithPoints = studentList.map((student) => {
       const points = selectedPoints[student.groupname] || {};
       return { ...student, points };
     });
-    console.log('Data to save:', studentsWithPoints);
-    
+
+    try {
+      const response = await axios.post('http://localhost:5001/api/grading-sheets/save', studentsWithPoints);
+      console.log('Data saved successfully:', response.data);
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
   };
  
   const handleExportButtonClick = () => {
