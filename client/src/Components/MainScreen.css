@@ -53,7 +53,7 @@
   background-color: #a53f5d; /* A lighter maroon for hover effect */
 }
 
-/* Typography color for consistency */
+
 .asu-typography {
   color: #8C1D40; /* ASU Maroon */
 }
@@ -64,20 +64,21 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
+  background-color: #8C1D40;
   padding: 20px;
-  border: 2px solid #8C1D40; /* ASU Maroon color */
+  border: 2px solid goldenrod; /* ASU Maroon color */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
 
 .popup-content {
   text-align: center;
+  color: goldenrod;
 }
 
 .popup button {
   background-color: #8C1D40;
-  color: white;
+  color: goldenrod;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
@@ -85,7 +86,8 @@
 }
 
 .popup button:hover {
-  background-color: #a53f5d; /* Lighter maroon for hover effect */
+  background-color:goldenrod; 
+  color: #a53f5d;/* Lighter maroon for hover effect */
 }
 
 .input-container {

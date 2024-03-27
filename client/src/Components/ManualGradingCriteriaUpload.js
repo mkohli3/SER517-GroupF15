@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Container, CssBaseline, Typography, TextField, FormGroup, FormControlLabel, Checkbox, Paper, IconButton } from '@mui/material';
+import { Button, Container, CssBaseline, Typography, TextField, Paper, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import '../App.css';
 import { useNavigate } from 'react-router-dom';
 import './ManualGradingCriteriaUpload.css';
 
@@ -37,9 +36,6 @@ function ManualGradingCriteriaUpload() {
       })
     );
   };
-  
-
-
 
   const addCriteria = () => {
     setCriteriaList([
@@ -53,9 +49,6 @@ function ManualGradingCriteriaUpload() {
     updatedCriteriaList[criteriaIndex].deductions.push({ points: '', comment: '' });
     setCriteriaList(updatedCriteriaList);
   };
-  
-
-
 
   const removeDeduction = (criteriaIndex, deductionIndex) => {
     const updatedCriteriaList = [...criteriaList];
@@ -68,111 +61,77 @@ function ManualGradingCriteriaUpload() {
     navigate('/main-screen', { state: { criteriaList: criteriaList } });
   };
 
- 
-
- 
-  
-
-
   const renderCriteriaInputs = () => {
     return criteriaList.map((criteria, criteriaIndex) => (
-      <Container key={criteriaIndex} component="main" maxWidth="xs">
+      <Container key={criteriaIndex} component="main"  className="criteria-container">
         <CssBaseline />
-        <Paper elevation={3} style={{ padding: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px' }}>
+        
           <TextField
             label="Criteria Name"
             variant="outlined"
             fullWidth
+            InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} // Add color and background to the input
+                InputLabelProps={{ style: { color: '#8C1D40' } }}
             value={criteria.criteria}
             onChange={(e) => updateCriteria(criteriaIndex, 'criteria', e.target.value)}
-            style={{ marginBottom: '10px' }}
           />
           <TextField
             label="Points"
             type="number"
             variant="outlined"
             fullWidth
+            InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} // Add color and background to the input
+                InputLabelProps={{ style: { color: '#8C1D40' } }}
             value={criteria.points}
             onChange={(e) => updateCriteria(criteriaIndex, 'points', e.target.value)}
-            style={{ marginBottom: '10px' }}
           />
           
           {criteria.deductions.map((deduction, deductionIndex) => (
-            <div key={deductionIndex} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              
+            <div key={deductionIndex} className="deduction-container">
               <TextField
                 label={`Deduction ${deductionIndex + 1} Points`}
                 type="number"
-                variant="outlined"
+                variant="outlined"InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} // Add color and background to the input
+                InputLabelProps={{ style: { color: '#8C1D40' } }}
+                
                 value={deduction.points}
                 onChange={(e) => updateDeductions(criteriaIndex,deductionIndex, 'points', e.target.value)}
-                style={{ marginBottom: '10px' }}
               />
               <TextField
                 label={`Deduction ${deductionIndex + 1} Comment`}
                 variant="outlined"
                 fullWidth
+                InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} // Add color and background to the input
+                InputLabelProps={{ style: { color: '#8C1D40' } }}
+
                 value={deduction.comment}
                 onChange={(e) => updateDeductions(criteriaIndex, deductionIndex, 'comment', e.target.value, deductionIndex)}
-                style={{ marginBottom: '10px' }}
               />
-              <IconButton onClick={() => removeDeduction(criteriaIndex, deductionIndex)}>
+              <IconButton className="delete-icon" onClick={() => removeDeduction(criteriaIndex, deductionIndex)}>
                 <DeleteIcon />
               </IconButton>
             </div>
           ))}
-          <Button
-            variant="contained"
-            onClick={() => addDeduction(criteriaIndex)}
-          >
-            Add Deduction
-          </Button>
-        </Paper>
+          <button className="add-deduction-button" onClick={() => addDeduction(criteriaIndex)}>Add Deduction</button>
       </Container>
     ));
   };
-  
-
-
 
   return (
-    <>
-      <div style={{ position: 'fixed', bottom: '50px', left: '50%', transform: 'translateX(-50%)', margin: '5px 0' }}>
-        <div style={{ display: 'flex', gap: '5px' }}>
-          <Button
-            type="button"
-            variant="contained"
-            sx={{
-              backgroundColor: '#8C1D40',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#a53f5d',
-              },
-              margin: '3px 0px',
-            }}
-            onClick={handleSaveButtonClick}
-          >
-            Save
-          </Button>
-          <Button
-            type="button"
-            variant="contained"
-            sx={{
-              backgroundColor: '#8C1D40',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#a53f5d',
-              },
-              margin: '3px 0px',
-            }}
-            onClick={addCriteria}
-          >
-            Add New Criteria
-          </Button>
-        </div>
-      </div>
-      {renderCriteriaInputs()}
-    </>
+    <div className="manual-grading-criteria-upload">
+      <div>
+
+
+<div style={{ position: 'fixed', top:"0px", left: '50%', width:"100vw", transform: 'translateX(-50%)', zIndex: '9999', backgroundColor:"goldenrod" }}>
+<h1 style={{  left: '0px',top:"0px", width: '100%', backgroundColor: '#8C1D40', color: 'goldenrod', padding: '10px', borderRadius: '5px', textAlign: 'center', marginBottom:'0px', position:"relative", top:"-20px" }}>Add Grading Criteria Below</h1>
+<div style={{display:"flex", justifyContent:"center"}}>
+  <button onClick={handleSaveButtonClick}>Save</button>
+  <button onClick={addCriteria}>Add New Criteria</button>
+  </div>
+</div>
+</div>
+    <div style={{ marginTop: '150px' }}>{renderCriteriaInputs()}</div>
+    </div>
   );
 }
 

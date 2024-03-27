@@ -3,8 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Typography, Select, MenuItem } from '@mui/material';
 import './MainScreen.css'; 
 
-import axios from 'axios';
-
 const MainScreen = () => {
   const [studentList, setStudentList] = useState([]);
   // State to track selected points by group
@@ -72,18 +70,14 @@ const handleEditButtonClick = (index) => {
     );
   };
 
-  const handleSaveButtonClick = async () => {
+  const handleSaveButtonClick = () => {
+    
     const studentsWithPoints = studentList.map((student) => {
       const points = selectedPoints[student.groupname] || {};
       return { ...student, points };
     });
-
-    try {
-      const response = await axios.post('http://localhost:5001/api/grading-sheets/save', studentsWithPoints);
-      console.log('Data saved successfully:', response.data);
-    } catch (error) {
-      console.error('Error saving data:', error);
-    }
+    console.log('Data to save:', studentsWithPoints);
+    
   };
  
   const handleExportButtonClick = () => {
@@ -130,9 +124,17 @@ const handleEditButtonClick = (index) => {
   
     return (
       isOpen && (
-        <div className="popup">
+        <div className="popup" background-color= '#8C1D40' >
           <div className="popup-content">
             <h2>Edit Comments</h2>
+            <div className="input-container">
+              <label htmlFor="criteriaPoints">Criteria Name:</label>
+              <input
+                id="criteriaP"
+                name="criteria"
+                value={editedCriteria.criteria}
+                onChange={handleInputChange}
+              />
             <div className="input-container">
               <label htmlFor="criteriaPoints">Points:</label>
               <input
@@ -142,6 +144,7 @@ const handleEditButtonClick = (index) => {
                 value={editedCriteria.points}
                 onChange={handleInputChange}
               />
+            </div>
             </div>
             <div className="input-container">
             <label htmlFor="criteriaComments">Comments:</label>
@@ -154,9 +157,12 @@ const handleEditButtonClick = (index) => {
               cols={50}
             />
           </div>
+
+          
             <button onClick={handleSave}>Save</button>
             <button onClick={onClose}>Cancel</button>
           </div>
+          
         </div>
       )
     );
@@ -240,6 +246,7 @@ const handleEditButtonClick = (index) => {
     onClose={() => setEditPopupOpen(false)}
     criteriaIndex={editingCriteriaIndex}
     criteriaList={criteriaList}
+    
     onSave={(editedCriteria) => {
       // Handle saving the edited criteria
       console.log("Edited criteria:", editedCriteria);
