@@ -102,6 +102,20 @@ const MainScreen = () => {
     }));
   };
 
+  const handleUploadCSV = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    
+    reader.onload = (event) => {
+      const result = event.target.result;
+      const lines = result.split('\n').map(line => line.split(','));
+      const students = lines.slice(1).map(line => ({ groupname: line[0], asuid: line[1] }));
+      setStudentList(students);
+    };
+
+    reader.readAsText(file);
+  };
+
   const EditCriteriaPopup = ({ isOpen, onClose, criteriaIndex, criteriaList, onSave }) => {
     const [editedCriteria, setEditedCriteria] = useState({ ...criteriaList[criteriaIndex] });
     const [criteriaTypeColor, setCriteriaTypeColor] = useState('#000');
@@ -187,7 +201,7 @@ const MainScreen = () => {
         <thead>
           <tr>
             <th>Group Name</th>
-            <th>ASU Id</th>
+            <th>ASURITE</th>
             {criteriaList.map((criteria, index) => (
               <th key={index}>
                 {criteria.criteria}
@@ -197,27 +211,26 @@ const MainScreen = () => {
           </tr>
         </thead>
         <tbody>
-          {studentList &&
-            studentList.map((student, studentIndex) => (
-              <tr key={studentIndex}>
-                <td>{student.groupname}</td>
-                <td>{student.asuid}</td>
-                {criteriaList.map((criteria, criteriaIndex) => (
-                  <td key={criteriaIndex}>
-                    <Select
-                      value={(selectedPoints[student.groupname] && selectedPoints[student.groupname][criteria.criteria]) || ''}
-                      onChange={(e) => handlePointChange(student.groupname, criteria.criteria, e.target.value)}
-                    >
-                      {[...Array(criteria.points + 1).keys()].map((point) => (
-                        <MenuItem key={point} value={point}>
-                          {point}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </td>
-                ))}
-              </tr>
-            ))}
+          {studentList.map((student, studentIndex) => (
+            <tr key={studentIndex}>
+              <td>{student.groupname}</td>
+              <td>{student.asuid}</td>
+              {criteriaList.map((criteria, criteriaIndex) => (
+                <td key={criteriaIndex}>
+                  <Select
+                    value={(selectedPoints[student.groupname] && selectedPoints[student.groupname][criteria.criteria]) || ''}
+                    onChange={(e) => handlePointChange(student.groupname, criteria.criteria, e.target.value)}
+                  >
+                    {[...Array(criteria.points + 1).keys()].map((point) => (
+                      <MenuItem key={point} value={point}>
+                        {point}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
 
@@ -225,6 +238,8 @@ const MainScreen = () => {
         <div style={{ display: 'flex', gap: '5px' }}>
           <button onClick={handleSaveButtonClick}>Save</button>
           <button onClick={handleStudentDetailsButtonClick}>Add Student Details</button>
+          <label htmlFor="csv-upload" className="asu-button">Upload Students</label>
+          <input type="file" accept=".csv" id="csv-upload" onChange={handleUploadCSV} style={{ display: 'none' }} />
           <button onClick={handleExportButtonClick}>Export CSV</button>
         </div>
       </div>
