@@ -1,39 +1,35 @@
 import React, { useState, useRef } from 'react';
 import Papa from 'papaparse';
-import { Button } from '@mui/material';
-import './CSVUpdate.css';
-
-// Helper function to convert array data back to CSV format
-const arrayToCsv = (data) => {
-  return data.map(row => row.join(',')).join('\n');
-};
-
-const EditableCell = ({ value, onChange }) => {
-  return (
-    <input
-      type="text"
-      defaultValue={value}
-      onBlur={(e) => onChange(e.target.value)}
-      style={{ width: "100%" }}
-    />
-  );
-};
+import { useNavigate } from 'react-router-dom'; 
 
 const CSVUpdate = () => {
-  const [headers, setHeaders] = useState([]);
-  const [data, setData] = useState([]);
-  const fileInputRef = useRef(null); // Reference to the file input for reset
+  const [criteriaList, setCriteriaList] = useState([]);
+  const [fileName, setFileName] = useState('No file chosen'); 
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate(); 
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (!file) return; // Early return if no file selected
+    if (!file) {
+      setFileName('No file chosen'); 
+      return;
+    }
+
+    setFileName(file.name); 
 
     Papa.parse(file, {
       complete: (result) => {
-        setHeaders(result.data[0]);
-        setData(result.data.slice(1));
-        // Reset the file input for re-upload
-        if (fileInputRef.current) fileInputRef.current.value = '';
+        const rows = result.data.slice(1);
+        const transformedData = rows.map((row) => ({
+          criteria: row[0] || '',
+          points: row[1] || '',
+          deductions: row.slice(2) || []
+        }));
+        setCriteriaList(transformedData);
+
+        console.log(transformedData);
+        
+        if (fileInputRef.current) fileInputRef.current.value = ''; 
       },
       error: (error) => {
         console.error('Error parsing CSV: ', error);
@@ -43,71 +39,55 @@ const CSVUpdate = () => {
     });
   };
 
-  const updateCellValue = (rowIndex, columnIndex, newValue) => {
-    const updatedData = [...data];
-    updatedData[rowIndex][columnIndex] = newValue;
-    setData(updatedData);
-  };
-
-  const addNewRow = () => {
-    setData([...data, new Array(headers.length).fill("")]);
-  };
-
-  const exportToCsv = () => {
-    const csvString = arrayToCsv([headers, ...data]);
-    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'updated_data.csv';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleStartGrading = () => {
+    // Implement the navigation logic if necessary
+    navigate('/main-screen', { state: { criteriaList } });
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
       <input
         ref={fileInputRef}
         type="file"
         accept=".csv"
         onChange={handleFileChange}
-        style={{ display: 'block', margin: '20px 0' }}
+        style={{
+          margin: '20px 0',
+          padding: '10px',
+          borderColor: '#8C1D40', // ASU Maroon
+          borderWidth: '2px',
+          borderRadius: '5px',
+          color: '#8C1D40',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease-in-out'
+        }}
+        onMouseOver={(e) => {
+          e.target.style.backgroundColor = '#FFC627'; // ASU Gold
+          e.target.style.color = '#FFFFFF';
+        }}
+        onMouseOut={(e) => {
+          e.target.style.backgroundColor = '#FFFFFF';
+          e.target.style.color = '#8C1D40';
+        }}
       />
-      {headers.length > 0 && (
-        <>
-          <table>
-            <thead>
-              <tr>
-                {headers.map((header, index) => (
-                  <th key={index}>{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>
-                      <EditableCell
-                        value={cell}
-                        onChange={(newValue) => updateCellValue(rowIndex, cellIndex, newValue)}
-                      />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <Button className="Button Button-primary" onClick={addNewRow} style={{ margin: '10px' }}>
-            Add Student
-          </Button>
-          <Button className="Button Button-secondary" onClick={exportToCsv} style={{ margin: '10px' }}>
-            Export to CSV
-          </Button>
-
-        </>
-      )}
+      <label style={{ color: '#8C1D40', marginTop: '10px' }}>{fileName}</label> {/* Display the file name */}
+      <button
+        onClick={handleStartGrading}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#8C1D40', // ASU Maroon
+          color: '#FFFFFF',
+          fontSize: '16px',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          transition: 'background-color 0.3s ease-in-out',
+        }}
+        onMouseOver={(e) => e.target.style.backgroundColor = '#FFC627'} // ASU Gold on hover
+        onMouseOut={(e) => e.target.style.backgroundColor = '#8C1D40'} // ASU Maroon
+      >
+        Start Grading
+      </button>
     </div>
   );
 };
