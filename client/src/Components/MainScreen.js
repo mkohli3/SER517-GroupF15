@@ -104,19 +104,24 @@ const MainScreen = () => {
 
   const EditCriteriaPopup = ({ isOpen, onClose, criteriaIndex, criteriaList, onSave }) => {
     const [editedCriteria, setEditedCriteria] = useState({ ...criteriaList[criteriaIndex] });
-
+    const [criteriaTypeColor, setCriteriaTypeColor] = useState('#000');
+  
     const handleInputChange = (e) => {
       const { name, value } = e.target;
+      if (name === 'type') {
+        // Set the color based on the selected criteria type
+        setCriteriaTypeColor(value === 'group' ? '#FFD700' : '#FFD700');
+      }
       setEditedCriteria((prevCriteria) => ({
         ...prevCriteria,
         [name]: value,
       }));
     };
-
+  
     const handleSave = () => {
       onSave(editedCriteria);
     };
-
+  
     return (
       isOpen && (
         <div className="popup">
@@ -159,6 +164,7 @@ const MainScreen = () => {
                 name="type"
                 value={editedCriteria.type}
                 onChange={handleInputChange}
+                style={{ color: criteriaTypeColor, fontWeight: 'bold', border: '1px solid #8C1D40' }}
               >
                 <MenuItem value="group">Group</MenuItem>
                 <MenuItem value="individual">Individual</MenuItem>
@@ -171,7 +177,7 @@ const MainScreen = () => {
       )
     );
   };
-
+  
   return (
     <div>
       <Typography component="h2" variant="h5" className="asu-typography center-text">
