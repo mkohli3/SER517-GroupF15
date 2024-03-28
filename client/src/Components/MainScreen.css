@@ -108,3 +108,27 @@
   margin-top: 3px;
   margin-bottom: 10px;
 }
+
+.asu-button {
+  background-color: #8C1D40; /* ASU Maroon */
+  color: goldenrod;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.asu-button:hover {
+  background-color: #a53f5d; /* A lighter maroon for hover effect */
+}
+
+#csv-upload-label {
+  background-color: #8C1D40; /* ASU Maroon */
+  color: goldenrod;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#csv-upload-label:hover {
+  background-color: #a53f5d; /* A lighter maroon for hover effect */
+}
