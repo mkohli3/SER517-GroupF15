@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Typography, Select, MenuItem } from '@mui/material';
+import { saveAs } from 'file-saver';
 import './MainScreen.css'; 
 
 const MainScreen = () => {
   const [studentList, setStudentList] = useState([]);
   const [selectedPoints, setSelectedPoints] = useState({});
   const [selectedComments, setSelectedComments] = useState({});
-  const locationState = useLocation().state;
-  let criteriaList = locationState.criteriaList;
+  const locationState = useLocation().state || {}; 
+  let criteriaList = locationState.criteriaList || [];
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
   const [editingCriteriaIndex, setEditingCriteriaIndex] = useState(null);
@@ -83,9 +84,34 @@ const MainScreen = () => {
       const comments = selectedComments[student.groupname] || {};
       return { ...student, points, comments };
     });
-    console.log('Data to export:', dataToExport);
+
+    const csvData = convertToCSV(dataToExport);
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'studentDetails.csv');
   };
 
+  const convertToCSV = (objArray) => {
+    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    let str = '';
+    
+   
+    const headers = Object.keys(array[0]).join(',') + '\r\n';
+    str += headers;
+
+   
+    for (let i = 0; i < array.length; i++) {
+      let line = '';
+      for (const index in array[i]) {
+        if (line !== '') line += ',';
+
+        line += array[i][index];
+      }
+
+      str += line + '\r\n';
+    }
+
+    return str;
+  };
   const handleStudentDetailsButtonClick = () => {
     setPopupOpen(true);
   };
