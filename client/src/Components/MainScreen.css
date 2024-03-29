@@ -49,8 +49,10 @@
   text-transform: uppercase;
 }
 
+
+
 .asu-button:hover {
-  background-color: #a53f5d; /* A lighter maroon for hover effect */
+  background-color: goldenrod; /* A lighter maroon for hover effect */
 }
 
 
@@ -118,7 +120,8 @@
 }
 
 .asu-button:hover {
-  background-color: #a53f5d; /* A lighter maroon for hover effect */
+  background-color: goldenrod; 
+  color: #a53f5d;/* A lighter maroon for hover effect */
 }
 
 #csv-upload-label {

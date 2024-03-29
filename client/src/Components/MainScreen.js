@@ -61,6 +61,8 @@ const MainScreen = () => {
                 onChange={(e) => setGroupName(e.target.value)}
               />
             </div>
+            <label htmlFor="csv-upload" className="asu-button">Upload Students</label>
+
             <button onClick={handleAddDetailsButton}>Add to Details</button>
             <button onClick={onClose}>Close</button>
           </div>
@@ -170,6 +172,19 @@ const MainScreen = () => {
     
   };
   
+  const handleUploadCSV = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const result = event.target.result;
+      const lines = result.split('\n').map(line => line.split(','));
+      const students = lines.slice(1).map(line => ({ groupname: line[0], asuid: line[1] }));
+      setStudentList(students);
+    };
+
+    reader.readAsText(file);
+  };
 
 
 
@@ -303,6 +318,7 @@ onChange={(e) => handlePointChange(student.groupname, student.asuId, criteria.cr
         <div style={{ display: 'flex', gap: '5px' }}>
           <button onClick={handleSaveButtonClick}>Save</button>
           <button onClick={handleStudentDetailsButtonClick}>Add Student Details</button>
+          <input type="file" accept=".csv" id="csv-upload" onChange={handleUploadCSV} style={{ display: 'none' }} />
           <button onClick={handleExportButtonClick}>Export CSV</button>
         </div>
       </div>

@@ -86,7 +86,7 @@ function ManualGradingCriteriaUpload() {
           onChange={(e) => updateCriteria(criteriaIndex, 'points', e.target.value)}
         />
         <FormControl fullWidth variant="outlined">
-          <InputLabel>Type</InputLabel>
+          
           <Select
             value={criteria.type}
             onChange={(e) => updateCriteria(criteriaIndex, 'type', e.target.value)}
