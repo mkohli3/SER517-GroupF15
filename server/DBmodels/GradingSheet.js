@@ -1,5 +1,18 @@
 const mongoose = require('mongoose');
 
+const gradingScopeSchema = new mongoose.Schema({
+  scopeType: {
+    type: String,
+    required: true,
+    enum: ['group', 'individual', 'both'],
+  },
+  gradingScale: {
+    type: Map,
+    of: String,
+  },
+  rubricDetails: [String],
+}, { _id: false });
+
 const gradingCriteriaSchema = new mongoose.Schema({
   criteriaName: {
     type: String,
