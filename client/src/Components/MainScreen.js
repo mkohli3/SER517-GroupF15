@@ -91,25 +91,36 @@ const MainScreen = () => {
   };
 
   const convertToCSV = (objArray) => {
-    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    const array = Array.isArray(objArray) ? objArray : [objArray];
     let str = '';
-    
-   
-    const headers = Object.keys(array[0]).join(',') + '\r\n';
-    str += headers;
+  
 
-   
+    const keys = new Set();
+    array.forEach((obj) => {
+      Object.keys(obj).forEach((key) => keys.add(key));
+    });
+  
+
+    const headers = Array.from(keys).join(',') + '\r\n';
+    str += headers;
+  
+
     for (let i = 0; i < array.length; i++) {
       let line = '';
-      for (const index in array[i]) {
+      for (const key of keys) {
         if (line !== '') line += ',';
-
-        line += array[i][index];
+  
+        const value = array[i][key];
+        if (value !== undefined && typeof value === 'object') {
+          line += JSON.stringify(value);
+        } else {
+          line += value !== undefined ? value : 'null';
+        }
       }
-
+  
       str += line + '\r\n';
     }
-
+  
     return str;
   };
   const handleStudentDetailsButtonClick = () => {
