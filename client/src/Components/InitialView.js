@@ -10,8 +10,8 @@ const InitialView = () => {
         <div className="initial-view">
             <img src={ASULogo} alt='ASU Logo' />
             <h1>Welcome to the Grading System</h1>
-            <button onClick={() => navigate('/grader-login')}>Grader View</button>
-            <button disabled>Student View (Coming Soon)</button>
+            <button onClick={() => navigate('/grader-login')}>Welcome</button>
+           
         </div>
     );
 };

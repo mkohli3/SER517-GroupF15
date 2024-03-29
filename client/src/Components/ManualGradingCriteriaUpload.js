@@ -40,7 +40,7 @@ function ManualGradingCriteriaUpload() {
   const addCriteria = () => {
     setCriteriaList([
       ...criteriaList,
-      { criteria: '', points: '', deductions: [], type: 'Individual' }, // Default to Individual
+      { criteria: '', points: '', deductions: [], type: '' }, 
     ]);
   };
 
@@ -63,34 +63,36 @@ function ManualGradingCriteriaUpload() {
 
   const renderCriteriaInputs = () => {
     return criteriaList.map((criteria, criteriaIndex) => (
-      <Container key={criteriaIndex} component="main"  className="criteria-container">
+      <Container key={criteriaIndex} component="main"  className="criteria-container" >
         <CssBaseline />
         
         <TextField
           label="Criteria Name"
           variant="outlined"
           fullWidth
-          InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} 
-          InputLabelProps={{ style: { color: '#8C1D40' } }}
+          // InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} 
+          // InputLabelProps={{ style: { color: '#8C1D40' } }}
           value={criteria.criteria}
           onChange={(e) => updateCriteria(criteriaIndex, 'criteria', e.target.value)}
+          style={{ marginBottom: '10px' }}
         />
         <TextField
           label="Points"
           type="number"
           variant="outlined"
           fullWidth
-          InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} 
-          InputLabelProps={{ style: { color: '#8C1D40' } }}
+          // InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} 
+          // InputLabelProps={{ style: { color: '#8C1D40' } }}
           value={criteria.points}
           onChange={(e) => updateCriteria(criteriaIndex, 'points', e.target.value)}
+          style={{ marginBottom: '10px' }}
         />
         <FormControl fullWidth variant="outlined">
-          
+          <InputLabel id="type">Criteria Type</InputLabel>
           <Select
+            labelId="type"
             value={criteria.type}
             onChange={(e) => updateCriteria(criteriaIndex, 'type', e.target.value)}
-            label="Type"
           >
             <MenuItem value="Individual">Individual</MenuItem>
             <MenuItem value="Group">Group</MenuItem>
@@ -103,19 +105,19 @@ function ManualGradingCriteriaUpload() {
               label={`Deduction ${deductionIndex + 1} Points`}
               type="number"
               variant="outlined"
-              InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} 
-              InputLabelProps={{ style: { color: '#8C1D40' } }}
+              
               value={deduction.points}
               onChange={(e) => updateDeductions(criteriaIndex,deductionIndex, 'points', e.target.value)}
+              style={{ marginBottom: '5px' }}
             />
             <TextField
               label={`Deduction ${deductionIndex + 1} Comment`}
               variant="outlined"
               fullWidth
-              InputProps={{ style: { color: '#8C1D40', backgroundColor: 'goldenrod' } }} 
-              InputLabelProps={{ style: { color: '#8C1D40' } }}
+             
               value={deduction.comment}
               onChange={(e) => updateDeductions(criteriaIndex, deductionIndex, 'comment', e.target.value)}
+              style={{ marginBottom: '5px' }}
             />
             <IconButton className="delete-icon" onClick={() => removeDeduction(criteriaIndex, deductionIndex)}>
               <DeleteIcon />
@@ -130,7 +132,7 @@ function ManualGradingCriteriaUpload() {
   return (
     <div className="manual-grading-criteria-upload">
       <div>
-        <div style={{ position: 'fixed', top:"0px", left: '50%', width:"100vw", transform: 'translateX(-50%)', zIndex: '9999', backgroundColor:"goldenrod" }}>
+        <div style={{ position: 'fixed', top:"0px", left: '50%', width:"100vw", transform: 'translateX(-50%)', zIndex: '9999', backgroundColor:"white" }}>
           <h1 style={{  left: '0px',top:"0px", width: '100%', backgroundColor: '#8C1D40', color: 'goldenrod', padding: '10px', borderRadius: '5px', textAlign: 'center', marginBottom:'0px', position:"relative", top:"-20px" }}>Add Grading Criteria Below</h1>
           <div style={{display:"flex", justifyContent:"center"}}>
             <button onClick={handleSaveButtonClick}>Save</button>

@@ -7,26 +7,10 @@
 }
 
 .main-screen-table thead {
-  background-color: #8C1D40; /* ASU Maroon */
-  color: #FFC627; /* ASU Gold */
+  background-color: goldenrod; /* ASU Maroon */
+  color: #8C1D40; /* ASU Gold */
 }
 
-/* Style adjustments for table rows */
-.main-screen-table tbody tr {
-  background-color: #FFF; /* Light background for rows */
-  color: #000; /* Dark text for readability */
-}
-
-.main-screen-table tbody tr:nth-child(odd) {
-  background-color: #FFC627; /* ASU Gold for alternate rows */
-  color: #8C1D40; /* ASU Maroon text for contrast */
-}
-
-/* Hover effect for rows */
-.main-screen-table tr:hover {
-  background-color: #8C1D40; /* ASU Maroon */
-  color: #FFC627; /* ASU Gold text */
-}
 
 .main-screen-table th,
 .main-screen-table td {
@@ -48,48 +32,46 @@
   cursor: pointer;
   text-transform: uppercase;
 }
-
-
-
 .asu-button:hover {
   background-color: goldenrod; /* A lighter maroon for hover effect */
 }
 
 
 .asu-typography {
-  color: #8C1D40; /* ASU Maroon */
+  background-color: #8C1D40;
+  color: goldenrod; /* ASU Maroon */
 }
 
-/* Existing Popup CSS */
 .popup {
   position: fixed;
+  width: 500px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #8C1D40;
+  background-color: white;
   padding: 20px;
   border: 2px solid goldenrod; /* ASU Maroon color */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  
 }
 
 .popup-content {
   text-align: center;
-  color: goldenrod;
+  
 }
 
 .popup button {
   background-color: #8C1D40;
   color: goldenrod;
-  border: none;
+  
   padding: 10px 20px;
   cursor: pointer;
-  font-size: 16px;
+  
 }
 
 .popup button:hover {
   background-color:goldenrod; 
-  color: #a53f5d;/* Lighter maroon for hover effect */
+  color: #8C1D40;/* Lighter maroon for hover effect */
 }
 
 .input-container {
@@ -121,11 +103,11 @@
 
 .asu-button:hover {
   background-color: goldenrod; 
-  color: #a53f5d;/* A lighter maroon for hover effect */
+  color: #8C1D40;/* A lighter maroon for hover effect */
 }
 
 #csv-upload-label {
-  background-color: #8C1D40; /* ASU Maroon */
+  background-color: #8C1D40; 
   color: goldenrod;
   border: none;
   padding: 10px 20px;
@@ -133,5 +115,5 @@
 }
 
 #csv-upload-label:hover {
-  background-color: #a53f5d; /* A lighter maroon for hover effect */
+  background-color: #8C1D40; /* A lighter maroon for hover effect */
 }
