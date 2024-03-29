@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Typography, Select, MenuItem } from '@mui/material';
 import { saveAs } from 'file-saver';
+import 'react-toastify/dist/ReactToastify.css';
+import './MainScreen.css';
 import './MainScreen.css'; 
 
 const MainScreen = () => {
@@ -77,7 +79,9 @@ const MainScreen = () => {
       const comments = selectedComments[student.groupname] || {};
       return { ...student, points, comments };
     });
-    
+
+   
+    toast.success('Data saved successfully!');
   };
 
   const handleExportButtonClick = () => {
@@ -90,8 +94,10 @@ const MainScreen = () => {
     const csvData = convertToCSV(dataToExport);
     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, 'studentDetails.csv');
-  };
 
+  
+    toast.success('CSV exported successfully!');
+  };
   const convertToCSV = (objArray) => {
     const array = Array.isArray(objArray) ? objArray : [objArray];
     let str = '';
@@ -267,6 +273,7 @@ const MainScreen = () => {
   
   return (
     <div>
+      <ToastContainer />
       <Typography component="h2" variant="h5" className="asu-typography center-text">
         Grading Criteria Display
       </Typography>
