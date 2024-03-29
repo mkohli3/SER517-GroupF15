@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, Typography, Select, MenuItem } from '@mui/material';
+import { saveAs } from 'file-saver';
+import 'react-toastify/dist/ReactToastify.css';
+import './MainScreen.css';
+import './MainScreen.css'; 
   import { useLocation, useNavigate } from 'react-router-dom';
   import { Button, Typography, Select, MenuItem } from '@mui/material';
   import { saveAs } from 'file-saver';
@@ -74,6 +80,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
       );
     };
 
+  const handleSaveButtonClick = () => {
+    const studentsWithPoints = studentList.map((student) => {
+      const points = selectedPoints[student.groupname] || {};
+      const comments = selectedComments[student.groupname] || {};
+      return { ...student, points, comments };
+    });
+
+   
+    toast.success('Data saved successfully!');
+  };
     const handleSaveButtonClick = () => {
       const studentsWithPoints = studentList.map((student) => {
         const points = selectedPoints[student.groupname] || {};
@@ -90,6 +106,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
         return { ...student, points, comments };
       });
 
+    const csvData = convertToCSV(dataToExport);
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'studentDetails.csv');
+
+  
+    toast.success('CSV exported successfully!');
+  };
+  const convertToCSV = (objArray) => {
+    const array = Array.isArray(objArray) ? objArray : [objArray];
+    let str = '';
+  
       const csvData = convertToCSV(dataToExport);
       const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
       saveAs(blob, 'studentDetails.csv');
@@ -189,6 +216,113 @@ import DeleteIcon from '@mui/icons-material/Delete';
       reader.readAsText(file);
     };
 
+  const EditCriteriaPopup = ({ isOpen, onClose, criteriaIndex, criteriaList, onSave }) => {
+    const [editedCriteria, setEditedCriteria] = useState({ ...criteriaList[criteriaIndex] });
+    const [criteriaTypeColor, setCriteriaTypeColor] = useState('#000');
+  
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      if (name === 'type') {
+        // Set the color based on the selected criteria type
+        setCriteriaTypeColor(value === 'Group' ? '#FFD700' : '#FFD700');
+      }
+      setEditedCriteria((prevCriteria) => ({
+        ...prevCriteria,
+        [name]: value,
+      }));
+    };
+  
+    const handleSave = () => {
+      onSave(editedCriteria);
+    };
+  
+    return (
+      isOpen && (
+        <div className="popup">
+          <div className="popup-content">
+            <h2>Edit Comments</h2>
+            <div className="input-container">
+              <label htmlFor="criteriaName">Criteria Name:</label>
+              <input
+                id="criteriaName"
+                name="criteria"
+                value={editedCriteria.criteria}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="input-container">
+              <label htmlFor="criteriaPoints">Points:</label>
+              <input
+                type="number"
+                id="criteriaPoints"
+                name="points"
+                value={editedCriteria.points}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="input-container">
+              <label htmlFor="criteriaComments">Comments:</label>
+              <textarea
+                id="criteriaComments"
+                name="comments"
+                value={editedCriteria.comments}
+                onChange={handleInputChange}
+                rows={4}
+                cols={50}
+              />
+            </div>
+            <div className="input-container">
+              <label htmlFor="criteriaType">Criteria Type:</label>
+              <Select
+                id="criteriaType"
+                name="type"
+                value={editedCriteria.type}
+                onChange={handleInputChange}
+                style={{ color: criteriaTypeColor, fontWeight: 'bold', border: '1px solid #8C1D40' }}
+              >
+                <MenuItem value="group">Group</MenuItem>
+                <MenuItem value="individual">Individual</MenuItem>
+              </Select>
+            </div>
+            <button onClick={handleSave}>Save</button>
+            <button onClick={onClose}>Cancel</button>
+          </div>
+        </div>
+      )
+    );
+  };
+  
+  return (
+    <div>
+      <ToastContainer />
+      <Typography component="h2" variant="h5" className="asu-typography center-text">
+        Grading Criteria Display
+      </Typography>
+      <table className="main-screen-table">
+        <thead>
+          <tr>
+            <th>Group Name</th>
+            <th>ASU Id</th>
+            {criteriaList.map((criteria, index) => (
+              <th key={index}>
+                {criteria.criteria}
+                <button onClick={() => handleEditButtonClick(index)}>Edit</button>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {studentList &&
+            studentList.map((student, studentIndex) => (
+              <tr key={studentIndex}>
+                <td>{student.groupname}</td>
+                <td>{student.asuid}</td>
+                {criteriaList.map((criteria, criteriaIndex) => (
+                  <td key={criteriaIndex}>
+                    <Select
+value={(selectedPoints[student.groupname] && selectedPoints[student.groupname][student.asuId] && selectedPoints[student.groupname][student.asuId][criteria.criteria]) || ''}
+onChange={(e) => handlePointChange(student.groupname, student.asuId, criteria.criteria, e.target.value)}
+>
     const EditCriteriaPopup = ({ isOpen, onClose, criteriaIndex, criteriaList, onSave }) => {
       const [editedCriteria, setEditedCriteria] = useState({ ...criteriaList[criteriaIndex] });
     
