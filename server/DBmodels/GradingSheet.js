@@ -11,7 +11,7 @@ const gradingScopeSchema = new mongoose.Schema({
     of: String,
   },
   rubricDetails: [String],
-}, { _id: false });
+}, { _id: false }); 
 
 const gradingCriteriaSchema = new mongoose.Schema({
   criteriaName: {
