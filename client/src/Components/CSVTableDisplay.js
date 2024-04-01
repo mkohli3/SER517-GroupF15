@@ -1,15 +1,9 @@
-
- 
-// CSVTableDisplay.js
-// CSVTableDisplay.js
-
 import React from 'react';
-
 import './CSVTableDisplay.css';
 
 const CSVTableDisplay = ({ headers, data }) => {
-  if (!headers.length || !data.length) {
-    return null; // Don't render if there are no headers or data
+  if (!headers || !data || headers.length === 0 || data.length === 0) {
+    return <div>No data to display</div>;
   }
 
   return (
