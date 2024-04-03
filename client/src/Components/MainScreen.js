@@ -94,17 +94,34 @@ import './MainScreen.css';
       const dataToExport = studentList.map((student) => {
         const points = selectedPoints[student.groupname] || {};
         const comments = selectedComments[student.groupname] || {};
-        const totalPoints = getTotalPoints(student.groupname); // Function to calculate total points
-        return { ...student, points, comments, totalPoints }; // Include totalPoints in the exported data
+        
+        const flattenedPoints = {};
+        const flattenedComments = {};
+        
+        Object.entries(points).forEach(([asuId, criteriaPoints]) => {
+          Object.entries(criteriaPoints).forEach(([criteria, point]) => {
+            flattenedPoints[`${criteria}_points`] = point;
+          });
+        });
+        
+        Object.entries(comments).forEach(([asuId, criteriaComments]) => {
+          Object.entries(criteriaComments).forEach(([criteria, comment]) => {
+            flattenedComments[`${criteria}_comment`] = comment;
+          });
+        });
+        
+        // Calculate total points for the student
+        const totalPoints = getTotalPoints(student.groupname);
+        
+        return { ...student, ...flattenedPoints, ...flattenedComments, totalPoints };
       });
-    
+      
       const csvData = convertToCSV(dataToExport);
-    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, 'studentDetails.csv');
+      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+      saveAs(blob, 'studentDetails.csv');
+      
       toast.success('CSV exported successfully!');
-
     };
-    
     // Function to calculate total points for a student group
     const getTotalPoints = (groupName) => {
       let totalPoints = 0;
