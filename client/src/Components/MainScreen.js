@@ -94,32 +94,26 @@ import './MainScreen.css';
       const dataToExport = studentList.map((student) => {
         const points = selectedPoints[student.groupname] || {};
         const comments = selectedComments[student.groupname] || {};
-        
-        const flattenedPoints = {};
-        const flattenedComments = {};
-        
-        Object.entries(points).forEach(([asuId, criteriaPoints]) => {
-          Object.entries(criteriaPoints).forEach(([criteria, point]) => {
-            flattenedPoints[`${criteria}_points`] = point;
-          });
+    
+        const flattenedData = {};
+    
+        criteriaList.forEach((criteria) => {
+          const criteriaPoints = points[student.asuid]?.[criteria.criteria] || 0;
+          const criteriaComment = comments[student.asuid]?.[criteria.criteria] || "";
+    
+          flattenedData[`${criteria.criteria}_points`] = criteriaPoints;
+          flattenedData[`${criteria.criteria}_comment`] = criteriaComment;
         });
-        
-        Object.entries(comments).forEach(([asuId, criteriaComments]) => {
-          Object.entries(criteriaComments).forEach(([criteria, comment]) => {
-            flattenedComments[`${criteria}_comment`] = comment;
-          });
-        });
-        
-        // Calculate total points for the student
+    
         const totalPoints = getTotalPoints(student.groupname);
-        
-        return { ...student, ...flattenedPoints, ...flattenedComments, totalPoints };
+    
+        return { ...student, ...flattenedData, totalPoints };
       });
-      
+    
       const csvData = convertToCSV(dataToExport);
       const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
       saveAs(blob, 'studentDetails.csv');
-      
+    
       toast.success('CSV exported successfully!');
     };
     // Function to calculate total points for a student group
