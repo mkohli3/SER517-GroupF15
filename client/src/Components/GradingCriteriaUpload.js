@@ -37,7 +37,7 @@ const handleManualButtonClick = () => {
             
             <button type="button" className="button" fullWidth variant="contained" color="primary" onClick={handleCSVButtonClick}  
             >
-              Enter CSV sheet
+              Upload Criteria CSV sheet
             </button>
       <Typography component="h" variant="h5" style={{ fontSize: '16px', fontWeight: 'bold', color: '#800000' }}>
               Or

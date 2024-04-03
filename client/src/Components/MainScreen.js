@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from 'react-toastify';
 import './MainScreen.css';
 
   const MainScreen = () => {
@@ -93,47 +94,50 @@ import './MainScreen.css';
       const dataToExport = studentList.map((student) => {
         const points = selectedPoints[student.groupname] || {};
         const comments = selectedComments[student.groupname] || {};
-        return { ...student, points, comments };
+        const totalPoints = getTotalPoints(student.groupname); // Function to calculate total points
+        return { ...student, points, comments, totalPoints }; // Include totalPoints in the exported data
       });
-
+    
       const csvData = convertToCSV(dataToExport);
-      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-      saveAs(blob, 'studentDetails.csv');
-
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'studentDetails.csv');
       toast.success('CSV exported successfully!');
+
     };
+    
+    // Function to calculate total points for a student group
+    const getTotalPoints = (groupName) => {
+      let totalPoints = 0;
+      const points = selectedPoints[groupName] || {};
+      for (const studentId in points) {
+        for (const criteria in points[studentId]) {
+          totalPoints += parseInt(points[studentId][criteria]);
+        }
+      }
+      return totalPoints;
+    };
+    
 
     const convertToCSV = (objArray) => {
-      const array = Array.isArray(objArray) ? objArray : [objArray];
+      const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
       let str = '';
-    
-
-      const keys = new Set();
-      array.forEach((obj) => {
-        Object.keys(obj).forEach((key) => keys.add(key));
-      });
-    
-
-      const headers = Array.from(keys).join(',') + '\r\n';
+  
+  
+      const headers = Object.keys(array[0]).join(',') + '\r\n';
       str += headers;
-    
-
+  
+  
       for (let i = 0; i < array.length; i++) {
         let line = '';
-        for (const key of keys) {
+        for (const index in array[i]) {
           if (line !== '') line += ',';
-    
-          const value = array[i][key];
-          if (value !== undefined && typeof value === 'object') {
-            line += JSON.stringify(value);
-          } else {
-            line += value !== undefined ? value : 'null';
-          }
+  
+          line += array[i][index];
         }
-    
+  
         str += line + '\r\n';
       }
-    
+  
       return str;
     };
     const handleStudentDetailsButtonClick = () => {
@@ -307,7 +311,8 @@ import './MainScreen.css';
     
     return (
       <div>
-        
+        <ToastContainer />
+
         <Typography component="h2" variant="h5" className="asu-typography center-text">
           Grading Criteria Display
         </Typography>
@@ -320,38 +325,49 @@ import './MainScreen.css';
                 <th key={index}>
                   {criteria.criteria}
                   <IconButton onClick={() => handleEditButtonClick(index)}><EditIcon /></IconButton>
+                  
                 </th>
+                
               ))}
+              <th>Total Points </th>
             </tr>
           </thead>
           <tbody>
             {studentList &&
-              studentList.map((student, studentIndex) => (
-                <tr key={studentIndex}>
-                  <td>{student.groupname}</td>
-                  <td>{student.asuid}</td>
-                  {criteriaList.map((criteria, criteriaIndex) => (
-                    <td key={criteriaIndex}>
-                      <Select
-  value={(selectedPoints[student.groupname] && selectedPoints[student.groupname][student.asuId] && selectedPoints[student.groupname][student.asuId][criteria.criteria]) || ''}
-  onChange={(e) => handlePointChange(student.groupname, student.asuId, criteria.criteria, e.target.value)}
-  >
-
-    {[...Array(parseInt(criteria.points) + 1).keys()].map((point) => (
-      <MenuItem key={point} value={point}>
-        {point}
-      </MenuItem>
-    ))}
-  </Select>
-
-  <div>
-  {selectedComments[student.groupname]?.[student.asuId]?.[criteria.criteria] || "No comments"}
-  </div>
-
-                    </td>
-                  ))}
-                      </tr>
+              // Inside the table body rendering logic
+studentList.map((student, studentIndex) => {
+  // Calculate total points for each student
+  let totalPoints = 0; // Initialize total points for the student
+  return (
+    <tr key={studentIndex}>
+      <td>{student.groupname}</td>
+      <td>{student.asuid}</td>
+      {criteriaList.map((criteria, criteriaIndex) => {
+        const points = (selectedPoints[student.groupname] && selectedPoints[student.groupname][student.asuId] && selectedPoints[student.groupname][student.asuId][criteria.criteria]) || 0;
+        totalPoints += parseInt(points); // Add points to total points
+        return (
+          <td key={criteriaIndex}>
+            <Select
+              value={points}
+              onChange={(e) => handlePointChange(student.groupname, student.asuId, criteria.criteria, e.target.value)}
+            >
+              {[...Array(parseInt(criteria.points) + 1).keys()].map((point) => (
+                <MenuItem key={point} value={point}>
+                  {point}
+                </MenuItem>
               ))}
+            </Select>
+            <div>
+              {selectedComments[student.groupname]?.[student.asuId]?.[criteria.criteria] || "No comments"}
+            </div>
+          </td>
+        );
+      })}
+      <td>{totalPoints}</td> {/* Render total points for the student */}
+    </tr>
+  );
+})}
+
           </tbody>
         </table>
 
