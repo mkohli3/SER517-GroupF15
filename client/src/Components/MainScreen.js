@@ -90,6 +90,8 @@ import './MainScreen.css';
       
     };
 
+    
+
     const handleExportButtonClick = () => {
       const dataToExport = studentList.map((student) => {
         const points = selectedPoints[student.groupname] || {};
@@ -98,8 +100,8 @@ import './MainScreen.css';
         const flattenedData = {};
     
         criteriaList.forEach((criteria) => {
-          const criteriaPoints = points[student.asuid]?.[criteria.criteria] || 0;
-          const criteriaComment = comments[student.asuid]?.[criteria.criteria] || "";
+          const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0; // Corrected asuId reference
+          const criteriaComment = comments[student.asuId]?.[criteria.criteria] || "";
     
           flattenedData[`${criteria.criteria}_points`] = criteriaPoints;
           flattenedData[`${criteria.criteria}_comment`] = criteriaComment;
@@ -116,6 +118,7 @@ import './MainScreen.css';
     
       toast.success('CSV exported successfully!');
     };
+    
     // Function to calculate total points for a student group
     const getTotalPoints = (groupName) => {
       let totalPoints = 0;
@@ -179,7 +182,7 @@ import './MainScreen.css';
         if (!updatedPoints[groupName][asuID]) {
           updatedPoints[groupName][asuID] = {};
         }
-        updatedPoints[groupName][asuID][criteria] = value;
+        updatedPoints[groupName][asuID][criteria] = parseInt(value); // Ensure it's an integer
         return updatedPoints;
       });
     
