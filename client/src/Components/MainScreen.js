@@ -358,22 +358,20 @@ studentList.map((student, studentIndex) => {
       <td>{student.asuid}</td>
       {criteriaList.map((criteria, criteriaIndex) => {
         const points = (selectedPoints[student.groupname] && selectedPoints[student.groupname][student.asuId] && selectedPoints[student.groupname][student.asuId][criteria.criteria]) || 0;
-        totalPoints += parseInt(points); // Add points to total points
+        console.log(points);
         return (
           <td key={criteriaIndex}>
             <Select
               value={points}
               onChange={(e) => handlePointChange(student.groupname, student.asuId, criteria.criteria, e.target.value)}
             >
-              {[...Array(parseInt(criteria.points) + 1).keys()].map((point) => (
-                <MenuItem key={point} value={point}>
-                  {point}
-                </MenuItem>
-              ))}
+              {criteria.deductions.map((deduction, index) => (
+              <MenuItem key={index} value={index}>
+                  {`-${deduction.points} : ${deduction.comment}`}
+              </MenuItem>
+            ))}
+           
             </Select>
-            <div>
-              {selectedComments[student.groupname]?.[student.asuId]?.[criteria.criteria] || "No comments"}
-            </div>
           </td>
         );
       })}
