@@ -11,6 +11,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import './MainScreen.css';
 
   const MainScreen = () => {
+    
     const [studentList, setStudentList] = useState([]);
     const [selectedPoints, setSelectedPoints] = useState({});
     const [selectedComments, setSelectedComments] = useState({});
@@ -23,6 +24,36 @@ import './MainScreen.css';
     const handleEditButtonClick = (index) => {
       setEditingCriteriaIndex(index);
       setEditPopupOpen(true);
+    };
+    const [newComments, setNewComments] = useState({});
+
+const handleNewCommentChange = (asuId, value) => {
+  setNewComments(prevComments => ({
+    ...prevComments,
+    [asuId]: value
+  }));
+};
+    
+    
+    const handleGroupNameEditButtonClick = (studentIndex) => {
+      const studentToUpdate = studentList[studentIndex];
+      const newGroupName = prompt('Enter new Group Name:', studentToUpdate.groupname);
+      if (newGroupName !== null && newGroupName !== '') {
+        const updatedStudentList = [...studentList];
+        updatedStudentList[studentIndex] = { ...studentToUpdate, groupname: newGroupName };
+        setStudentList(updatedStudentList);
+      }
+    };
+    const handleASUIDEditButtonClick = (studentIndex) => {
+      // Open a popup or perform any action to edit the ASU ID of the selected student
+      const studentToUpdate = studentList[studentIndex];
+      const newASUID = prompt('Enter new ASU ID:', studentToUpdate.asuid);
+      if (newASUID !== null && newASUID !== '') {
+        // Update the ASU ID of the selected student
+        const updatedStudentList = [...studentList];
+        updatedStudentList[studentIndex] = { ...studentToUpdate, asuid: newASUID };
+        setStudentList(updatedStudentList);
+      }
     };
 
     const StudentDetailsPopup = ({ isOpen, onClose, onAddDetails }) => {
@@ -341,12 +372,16 @@ import './MainScreen.css';
               
               {criteriaList.map((criteria, index) => (
                 <th key={index}>
-                  {criteria.criteria}
-                  <IconButton onClick={() => handleEditButtonClick(index)}><EditIcon /></IconButton>
-                  
-                </th>
+                {criteria.criteria} ({criteria.points})
+                <IconButton onClick={() => handleEditButtonClick(index)}>
+                  <EditIcon />
+                </IconButton>
+              </th>
+              
+            
                 
               ))}
+              <th>Comments</th>
               <th>Total Points </th>
             </tr>
           </thead>
@@ -358,8 +393,15 @@ studentList.map((student, studentIndex) => {
   let totalPoints = 0; // Initialize total points for the student
   return (
     <tr key={studentIndex}>
-      <td>{student.groupname}</td>
-      <td>{student.asuid}</td>
+    <td>
+  {student.groupname}
+  <IconButton onClick={() => handleGroupNameEditButtonClick(studentIndex)}><EditIcon /></IconButton>
+</td>
+      <td>
+  {student.asuid}
+  <IconButton onClick={() => handleASUIDEditButtonClick(studentIndex)}><EditIcon /></IconButton>
+</td>
+      
       {criteriaList.map((criteria, criteriaIndex) => {
         const points = (selectedPoints[student.groupname] && selectedPoints[student.groupname][student.asuId] && selectedPoints[student.groupname][student.asuId][criteria.criteria]) || criteria.points;
         let criteriaPoint = criteria.points - points;
@@ -380,8 +422,18 @@ studentList.map((student, studentIndex) => {
             </Select>
           </td>
           
+          
         );
       })}
+      <td className="NewComments">
+  <TextField
+    label="New Comment"
+    value={newComments[student.asuid] || ''}
+    onChange={(e) => handleNewCommentChange(student.asuid, e.target.value)}
+  />
+</td>
+
+
      <td>{totalPoints}</td> 
     </tr>
   );
