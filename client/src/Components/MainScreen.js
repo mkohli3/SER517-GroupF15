@@ -163,6 +163,7 @@ import './MainScreen.css';
     };
 
     const handlePointChange = (groupName, asuID, criteria, value) => {
+
       const totalPoints = parseInt(criteriaList.find(c => c.criteria === criteria)?.points);
       const deduction = totalPoints - parseInt(value);
     
@@ -198,7 +199,9 @@ import './MainScreen.css';
         return updatedComments;
       });
 
-      
+
+
+     
     };
     
     const handleUploadCSV = (e) => {
@@ -335,6 +338,7 @@ import './MainScreen.css';
             <tr>
               <th>Group Name</th>
               <th>ASU Id</th>
+              
               {criteriaList.map((criteria, index) => (
                 <th key={index}>
                   {criteria.criteria}
@@ -357,25 +361,28 @@ studentList.map((student, studentIndex) => {
       <td>{student.groupname}</td>
       <td>{student.asuid}</td>
       {criteriaList.map((criteria, criteriaIndex) => {
-        const points = (selectedPoints[student.groupname] && selectedPoints[student.groupname][student.asuId] && selectedPoints[student.groupname][student.asuId][criteria.criteria]) || 0;
-        console.log(points);
+        const points = (selectedPoints[student.groupname] && selectedPoints[student.groupname][student.asuId] && selectedPoints[student.groupname][student.asuId][criteria.criteria]) || criteria.points;
+        let criteriaPoint = criteria.points - points;
+        totalPoints += parseInt(criteriaPoint);
         return (
           <td key={criteriaIndex}>
             <Select
               value={points}
               onChange={(e) => handlePointChange(student.groupname, student.asuId, criteria.criteria, e.target.value)}
+  
             >
               {criteria.deductions.map((deduction, index) => (
-              <MenuItem key={index} value={index}>
+              <MenuItem key={index} value={deduction.points}>
                   {`-${deduction.points} : ${deduction.comment}`}
               </MenuItem>
             ))}
            
             </Select>
           </td>
+          
         );
       })}
-      <td>{totalPoints}</td> {/* Render total points for the student */}
+     <td>{totalPoints}</td> 
     </tr>
   );
 })}
