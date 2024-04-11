@@ -43,6 +43,14 @@ router.post('/update-criteria', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+router.get('/', async (req, res) => {
+  try {
+    const gradingSheets = await GradingSheet.find();
+    res.json(gradingSheets);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 router.post('/import-criteria', upload.single('excelFile'), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'No file uploaded.' });
