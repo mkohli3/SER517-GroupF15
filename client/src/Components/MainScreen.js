@@ -127,28 +127,30 @@ const handleNewCommentChange = (asuId, value) => {
       const dataToExport = studentList.map((student) => {
         const points = selectedPoints[student.groupname] || {};
         const comments = selectedComments[student.groupname] || {};
-    
+        
         const flattenedData = {};
-    
+        
         criteriaList.forEach((criteria) => {
           const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0; // Corrected asuId reference
-          const criteriaComment = comments[student.asuId]?.[criteria.criteria] || "";
-    
+          const criteriaComment = comments[student.asuId]?.[criteria.criteria] || ""; // Get comments for the student and criteria
+          
           flattenedData[`${criteria.criteria}_points`] = criteriaPoints;
-          flattenedData[`${criteria.criteria}_comment`] = criteriaComment;
+          flattenedData[`${criteria.criteria}_comment`] = criteriaComment; // Include comments in the flattened data
         });
-    
+        
         const totalPoints = getTotalPoints(student.groupname);
-    
+        
         return { ...student, ...flattenedData, totalPoints };
       });
-    
+      
+      // Convert dataToExport to CSV
       const csvData = convertToCSV(dataToExport);
       const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
       saveAs(blob, 'studentDetails.csv');
-    
+      
       toast.success('CSV exported successfully!');
     };
+    
     
     // Function to calculate total points for a student group
     const getTotalPoints = (groupName) => {
@@ -166,25 +168,30 @@ const handleNewCommentChange = (asuId, value) => {
     const convertToCSV = (objArray) => {
       const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
       let str = '';
-  
-  
-      const headers = Object.keys(array[0]).join(',') + '\r\n';
+    
+      // Get headers for CSV
+      const headers = Object.keys(array[0]).join(',') + ',Comments\r\n';
       str += headers;
-  
-  
+    
+      // Loop through each student
       for (let i = 0; i < array.length; i++) {
         let line = '';
+    
+        // Loop through each property of the student
         for (const index in array[i]) {
           if (line !== '') line += ',';
-  
           line += array[i][index];
         }
-  
+    
+        // Add comments to the line
+        line += `,"${array[i].comments}"`;
+    
         str += line + '\r\n';
       }
-  
+    
       return str;
     };
+    
     const handleStudentDetailsButtonClick = () => {
       setPopupOpen(true);
     };
