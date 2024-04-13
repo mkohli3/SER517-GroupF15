@@ -183,14 +183,18 @@ const handleNewCommentChange = (asuId, value) => {
           line += array[i][index];
         }
     
-        // Add comments to the line
+        // Include comments in the line (before Total Points)
         line += `,"${array[i].comments}"`;
+    
+        // Add Total Points to the line
+        line += `,${array[i].totalPoints}`;
     
         str += line + '\r\n';
       }
     
       return str;
     };
+    
     
     const handleStudentDetailsButtonClick = () => {
       setPopupOpen(true);
