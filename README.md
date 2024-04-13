@@ -5,6 +5,19 @@
 ### Description
 This project develops a web-based tool designed for educators and graders, facilitating collaborative grading tasks. It enables multiple graders to assign grades and feedback simultaneously, catering to both group and individual assessment types. Emphasizing user-friendliness, it features an intuitive interface for ease of use.
 
+Features to be implemented:
+
+- Create grading sheets and sections.
+- Provide separate grading criteria visible only to graders.
+- Specify criteria for groups, individuals, or both.
+- Include detailed descriptions for graders.
+- Assign point values and adjust manually.
+- Flag non-contributing students.
+- Support True/False grading options.
+- Import/export Excel or CSV files.
+- Additional features as needed.
+- Standalone or web-based tool (not hosted on a server).
+
 ### Getting Started
 
 #### Setting Up the Server
