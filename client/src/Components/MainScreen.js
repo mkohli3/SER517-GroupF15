@@ -143,9 +143,10 @@ const MainScreen = () => {
           criteria.deductions[index]?.comment;
       });
 
-      const totalPoints =
-        flattenedData[`${criteriaList[0].criteria}_points`] +
-        flattenedData[`${criteriaList[1].criteria}_points`];
+      let totalPoints = 0;
+      criteriaList.forEach((criteria) => {
+        totalPoints += flattenedData[`${criteria.criteria}_points`] || 0;
+      });
 
       return { ...student, ...flattenedData, totalPoints };
     });
@@ -155,6 +156,58 @@ const MainScreen = () => {
     saveAs(blob, "studentDetails.csv");
 
     toast.success("CSV exported successfully!");
+  };
+  const [selectedCriteria, setSelectedCriteria] = useState([]);
+
+  // Function to toggle selection of a criteria
+  const toggleCriteriaSelection = (criteria) => {
+    if (selectedCriteria.includes(criteria)) {
+      setSelectedCriteria(selectedCriteria.filter((c) => c !== criteria));
+    } else {
+      setSelectedCriteria([...selectedCriteria, criteria]);
+    }
+  };
+
+  const handlespecificdatabutton = () => {
+    const criteriaToExport = prompt("Enter criteria name to export:");
+
+    if (!criteriaToExport) {
+      toast.error("Please enter a criteria name.");
+      return;
+    }
+
+    // Find the criteria matching the entered name
+    const selectedCriteria = criteriaList.find(
+      (criteria) => criteria.criteria === criteriaToExport
+    );
+
+    if (!selectedCriteria) {
+      toast.error(`Criteria '${criteriaToExport}' not found.`);
+      return;
+    }
+
+    const dataToExport = studentList.map((student) => {
+      const points = selectedPoints[student.groupname] || {};
+      const comments = selectedComments[student.groupname] || {};
+
+      const criteriaPoints =
+        points[student.asuId]?.[selectedCriteria.criteria] || 0; // Corrected asuId reference
+
+      const flattenedData = {
+        [`${selectedCriteria.criteria}_points`]:
+          selectedCriteria.points - criteriaPoints,
+        [`${selectedCriteria.criteria}_comment`]:
+          selectedCriteria.deductions[0]?.comment || "", // Assuming you only need the comment of the first deduction
+      };
+
+      return { ...student, ...flattenedData };
+    });
+
+    const csvData = convertToCSV(dataToExport);
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, "studentDetails.csv");
+
+    toast.success(`CSV exported successfully for '${criteriaToExport}'.`);
   };
 
   // Function to calculate total points for a student group
@@ -508,6 +561,9 @@ const MainScreen = () => {
             onChange={handleUploadCSV}
             style={{ display: "none" }}
           />
+          <button onClick={handlespecificdatabutton}>
+            Export specific criteria CSV
+          </button>
           <button onClick={handleExportButtonClick}>Export CSV</button>
         </div>
       </div>
