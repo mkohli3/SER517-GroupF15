@@ -35,7 +35,7 @@ function ManualEntry() {
       });
       console.log('Criteria saved:', response.data);
       alert('Grading criteria saved successfully!');
-    } catch (error) {
+    } catch (error)  {
       console.error('Failed to save grading criteria:', error?.response?.data ? error.response.data : 'Unknown error');
       alert('Failed to save grading criteria. ' + (error?.response?.data ? error.response.data : 'Please check your network or contact support.'));
     }

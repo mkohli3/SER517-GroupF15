@@ -18,9 +18,19 @@ const OpenExistingSheet = ({ onSheetSelect, setShowOpenExistingSheet }) => {
       console.error('Error fetching grading sheets:', err);
     }
   };
+
   const handleSheetSelect = (sheet) => {
     navigate('/main-screen', { state: sheet });
     setShowOpenExistingSheet(false);
+  };
+
+  const handleSheetDelete = async (sheetId) => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/${sheetId}`);
+      fetchGradingSheets(); // Refresh the list of sheets after deletion
+    } catch (err) {
+      console.error('Error deleting grading sheet:', err);
+    }
   };
 
   return (
@@ -33,6 +43,7 @@ const OpenExistingSheet = ({ onSheetSelect, setShowOpenExistingSheet }) => {
           {sheets.map((sheet) => (
             <li key={sheet._id}>
               <button onClick={() => handleSheetSelect(sheet)}>{sheet.title}</button>
+              <button onClick={() => handleSheetDelete(sheet._id)}>Delete</button>
             </li>
           ))}
         </ul>
