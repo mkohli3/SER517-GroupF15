@@ -23,17 +23,16 @@ const upload = multer({
 
 // Route to create or update a grading sheet based on ID
 router.post('/create-or-update', async (req, res) => {
-  const { id, title } = req.body;
+  const { id, title, gradingCriteria } = req.body;
   try {
     let sheet;
     if (id) {
-      // Update existing sheet if ID is provided
       sheet = await GradingSheet.findById(id);
       if (!sheet) return res.status(404).json({ message: 'Grading sheet not found' });
       sheet.title = title;
+      sheet.gradingCriteria = gradingCriteria;
     } else {
-      // Create new sheet if no ID is provided
-      sheet = new GradingSheet({ title, gradingCriteria: [], ASUriteId: [], StudentName: [] });
+      sheet = new GradingSheet({ title, gradingCriteria, students: [] });
     }
     const savedSheet = await sheet.save();
     res.status(201).json(savedSheet);
@@ -44,13 +43,20 @@ router.post('/create-or-update', async (req, res) => {
 
 // Route to add or update criteria for a specific grading sheet
 router.post('/update-criteria', async (req, res) => {
-  const { id, gradingCriteria } = req.body;
+  const { id, title, gradingCriteria, students } = req.body;
   try {
-    const sheet = await GradingSheet.findById(id);
-    if (!sheet) {
-      return res.status(404).json({ message: 'Grading sheet not found' });
+    let sheet;
+    if (id) {
+      sheet = await GradingSheet.findById(id);
+      if (!sheet) {
+        return res.status(404).json({ message: 'Grading sheet not found' });
+      }
+    } else {
+      sheet = new GradingSheet();
     }
+    sheet.title = title; 
     sheet.gradingCriteria = gradingCriteria;
+    sheet.students = students;
     const updatedSheet = await sheet.save();
     res.status(200).json(updatedSheet);
   } catch (error) {
