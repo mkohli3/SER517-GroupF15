@@ -10,7 +10,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Configure Multer for Excel file uploads
-const upload = multer({ 
+const upload = multer({
   dest: 'uploads/', // Temporary folder to store uploaded files
   fileFilter: function (req, file, cb) {
     // Accept Excel files only (.xlsx)
@@ -24,7 +24,6 @@ const upload = multer({
 // Route to create or update a grading sheet based on ID
 router.post('/create-or-update', async (req, res) => {
   const { id, title } = req.body;
-
   try {
     let sheet;
     if (id) {
@@ -36,7 +35,6 @@ router.post('/create-or-update', async (req, res) => {
       // Create new sheet if no ID is provided
       sheet = new GradingSheet({ title, gradingCriteria: [], ASUriteId: [], StudentName: [] });
     }
-    
     const savedSheet = await sheet.save();
     res.status(201).json(savedSheet);
   } catch (error) {
@@ -47,16 +45,13 @@ router.post('/create-or-update', async (req, res) => {
 // Route to add or update criteria for a specific grading sheet
 router.post('/update-criteria', async (req, res) => {
   const { id, gradingCriteria } = req.body;
-
   try {
     const sheet = await GradingSheet.findById(id);
     if (!sheet) {
       return res.status(404).json({ message: 'Grading sheet not found' });
     }
-
     sheet.gradingCriteria = gradingCriteria;
     const updatedSheet = await sheet.save();
-
     res.status(200).json(updatedSheet);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -65,30 +60,35 @@ router.post('/update-criteria', async (req, res) => {
 
 // Route to handle Excel file upload and import grading criteria
 router.post('/import-criteria', upload.single('excelFile'), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded.' });
-  }
-
+  if (!req.file) return res.status(400).json({ message: 'No file uploaded.' });
   const filePath = path.join(__dirname, '..', req.file.path);
   try {
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const data = xlsx.utils.sheet_to_json(worksheet);
-
     const { id } = req.body;
     const sheet = await GradingSheet.findById(id);
-    if (!sheet) {
-      return res.status(404).json({ message: 'Grading sheet not found.' });
-    }
-
+    if (!sheet) return res.status(404).json({ message: 'Grading sheet not found.' });
     sheet.gradingCriteria = data;
     const updatedSheet = await sheet.save();
-
     fs.unlinkSync(filePath); // Clean up uploaded file after processing
     res.status(200).json(updatedSheet);
   } catch (error) {
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath); // Clean up if error occurs
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Route to fetch a specific grading sheet by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const sheet = await GradingSheet.findById(req.params.id);
+    if (!sheet) {
+      return res.status(404).json({ message: 'Grading sheet not found' });
+    }
+    res.status(200).json(sheet);
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
