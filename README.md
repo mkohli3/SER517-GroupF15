@@ -18,7 +18,7 @@ Features to be implemented:
 - Additional features as needed.
 - Standalone or web-based tool (not hosted on a server).
 
-#### Getting Started
+## Getting Started
 ### Deploying the Web App
 
 1. Navigate to the client directory:
