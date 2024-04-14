@@ -63,6 +63,17 @@ router.post('/update-criteria', async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+router.delete('/:id', async (req, res) => {
+  try {
+    const sheet = await GradingSheet.findByIdAndDelete(req.params.id);
+    if (!sheet) {
+      return res.status(404).json({ message: 'Grading sheet not found' });
+    }
+    res.status(200).json({ message: 'Grading sheet deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // Route to handle Excel file upload and import grading criteria
 router.post('/import-criteria', upload.single('excelFile'), async (req, res) => {
