@@ -11,29 +11,41 @@ import { toast, ToastContainer } from 'react-toastify';
 import './MainScreen.css';
 import axios from 'axios';
 
-  const MainScreen = () => {
-    
-    const [studentList, setStudentList] = useState([]);
-    const [selectedPoints, setSelectedPoints] = useState({});
-    const [selectedComments, setSelectedComments] = useState({});
-    const locationState = useLocation().state || {}; 
-    let criteriaList = locationState.criteriaList || [];
-    const [isPopupOpen, setPopupOpen] = useState(false);
-    const [isEditPopupOpen, setEditPopupOpen] = useState(false);
-    const [editingCriteriaIndex, setEditingCriteriaIndex] = useState(null);
+const MainScreen = () => {
+  const locationState = useLocation().state || {};
 
-    const handleEditButtonClick = (index) => {
-      setEditingCriteriaIndex(index);
-      setEditPopupOpen(true);
-    };
-    const [newComments, setNewComments] = useState({});
+  const [studentList, setStudentList] = useState(locationState.students || []);
+  const [selectedPoints, setSelectedPoints] = useState(
+    locationState.students?.reduce((acc, student) => {
+      acc[student.groupname] = student.points;
+      return acc;
+    }, {}) || {}
+  );
+  const [selectedComments, setSelectedComments] = useState(
+    locationState.students?.reduce((acc, student) => {
+      acc[student.groupname] = student.comments;
+      return acc;
+    }, {}) || {}
+  );
+  
+  const criteriaList = locationState.gradingCriteria || [];
+  const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isEditPopupOpen, setEditPopupOpen] = useState(false);
+  const [editingCriteriaIndex, setEditingCriteriaIndex] = useState(null);
+  const [newComments, setNewComments] = useState({});
 
-const handleNewCommentChange = (asuId, value) => {
-  setNewComments(prevComments => ({
-    ...prevComments,
-    [asuId]: value
-  }));
-};
+  const handleEditButtonClick = (index) => {
+    setEditingCriteriaIndex(index);
+    setEditPopupOpen(true);
+  };
+
+  const handleNewCommentChange = (asuId, value) => {
+    setNewComments(prevComments => ({
+      ...prevComments,
+      [asuId]: value
+    }));
+  };
+  
     
     
     const handleGroupNameEditButtonClick = (studentIndex) => {
