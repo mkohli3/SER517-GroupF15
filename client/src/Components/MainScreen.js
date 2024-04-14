@@ -120,6 +120,7 @@ const handleNewCommentChange = (asuId, value) => {
         
         if (!title || title.trim() === '') {
           title = 'Untitled'; 
+        }
     
         const requestData = {
           title: title,
