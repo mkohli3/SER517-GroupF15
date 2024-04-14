@@ -9,22 +9,34 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import "./MainScreen.css";
-
+import axios from "axios";
 const MainScreen = () => {
-  const [studentList, setStudentList] = useState([]);
-  const [selectedPoints, setSelectedPoints] = useState({});
-  const [selectedComments, setSelectedComments] = useState({});
   const locationState = useLocation().state || {};
-  let criteriaList = locationState.criteriaList || [];
+
+  const [studentList, setStudentList] = useState(locationState.students || []);
+  const [selectedPoints, setSelectedPoints] = useState(
+    locationState.students?.reduce((acc, student) => {
+      acc[student.groupname] = student.points;
+      return acc;
+    }, {}) || {}
+  );
+  const [selectedComments, setSelectedComments] = useState(
+    locationState.students?.reduce((acc, student) => {
+      acc[student.groupname] = student.comments;
+      return acc;
+    }, {}) || {}
+  );
+
+  const criteriaList = locationState.gradingCriteria || [];
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
   const [editingCriteriaIndex, setEditingCriteriaIndex] = useState(null);
-
+  const [newComments, setNewComments] = useState({});
   const handleEditButtonClick = (index) => {
     setEditingCriteriaIndex(index);
     setEditPopupOpen(true);
   };
-  const [newComments, setNewComments] = useState({});
+ 
 
   const handleNewCommentChange = (asuId, value) => {
     setNewComments((prevComments) => ({
@@ -116,14 +128,41 @@ const MainScreen = () => {
     );
   };
 
-  const handleSaveButtonClick = () => {
+  const handleSaveButtonClick = async () => {
     const studentsWithPoints = studentList.map((student) => {
       const points = selectedPoints[student.groupname] || {};
       const comments = selectedComments[student.groupname] || {};
       return { ...student, points, comments };
     });
 
-    toast.success("Data saved successfully!");
+    try {
+      let title = studentList[0]?.groupname || 'Untitled';
+
+      if (!title || title.trim() === '') {
+        title = 'Untitled'; 
+      }
+
+      const requestData = {
+        title: title,
+        gradingCriteria: criteriaList.map((criteria) => ({
+          criteriaName: criteria.criteria,
+          points: criteria.points,
+          criteriaType: criteria.type.toLowerCase(),
+        })),
+        students: studentsWithPoints,
+      };
+
+      if (locationState && locationState._id) {
+        requestData.id = locationState._id;
+      }
+
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/update-criteria`, requestData);
+      console.log('Grading sheet updated:', response.data);
+      toast.success('Data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save grading sheet:', error?.response?.data ? error.response.data : 'Unknown error');
+      toast.error('Failed to save data. ' + (error?.response?.data ? error.response.data : 'Please check your network or contact support.'));
+    }
   };
 
   const handleExportButtonClick = () => {
