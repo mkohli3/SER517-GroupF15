@@ -33,7 +33,11 @@ Features to be implemented:
    ```bash
    npm start
    ```
+4. Check the local port on which the web app is running in your browser and login using ASU Email ID
 
+5. Two options are available (Creating a new grading sheet and opening an existing one)
+ 
+6. After grading is done, choice is available to save the grading criteria and also to export the grading sheet as a CSV file.
 ### Setting Up the Server
 
 1. Navigate to the server directory:
