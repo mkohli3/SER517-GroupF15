@@ -19,6 +19,20 @@ Features to be implemented:
 - Standalone or web-based tool (not hosted on a server).
 
 ### Getting Started
+### Deploying the Web App
+
+1. Navigate to the client directory:
+   ```bash
+   cd client
+   ```
+2. Install the necessary dependencies:
+   ```bash
+   npm install
+   ```
+3. Deploy the app
+   ```bash
+   npm start
+   ```
 
 #### Setting Up the Server
 

@@ -562,7 +562,7 @@ const MainScreen = () => {
             style={{ display: "none" }}
           />
           <button onClick={handlespecificdatabutton}>
-            Export specific criteria CSV
+            Export Specific Criteria CSV
           </button>
           <button onClick={handleExportButtonClick}>Export CSV</button>
         </div>
