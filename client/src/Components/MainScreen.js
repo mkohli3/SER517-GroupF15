@@ -27,7 +27,7 @@ const MainScreen = () => {
     }, {}) || {}
   );
 
-  const criteriaList = locationState.gradingCriteria || [];
+  const criteriaList = locationState.criteriaList || [];
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
   const [editingCriteriaIndex, setEditingCriteriaIndex] = useState(null);
