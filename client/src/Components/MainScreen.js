@@ -34,9 +34,6 @@ const MainScreen = () => {
       return acc;
     }, {}) || {}
   );
-  
-  
-  
 
   const criteriaList = locationState.criteriaList || [];
   const [isPopupOpen, setPopupOpen] = useState(false);
@@ -46,7 +43,6 @@ const MainScreen = () => {
     setEditingCriteriaIndex(index);
     setEditPopupOpen(true);
   };
- 
 
   const handleAdditionalCommentChange = (groupname, asuId, value) => {
     setAdditionalComments((prevComments) => ({
@@ -57,9 +53,6 @@ const MainScreen = () => {
       },
     }));
   };
-  
-  
-  
 
   const handleGroupNameEditButtonClick = (studentIndex) => {
     const studentToUpdate = studentList[studentIndex];
@@ -152,10 +145,10 @@ const MainScreen = () => {
     });
 
     try {
-      let title = studentList[0]?.groupname || 'Untitled';
+      let title = studentList[0]?.groupname || "Untitled";
 
-      if (!title || title.trim() === '') {
-        title = 'Untitled'; 
+      if (!title || title.trim() === "") {
+        title = "Untitled";
       }
 
       const requestData = {
@@ -172,118 +165,82 @@ const MainScreen = () => {
         requestData.id = locationState._id;
       }
 
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/update-criteria`, requestData);
-      console.log('Grading sheet updated:', response.data);
-      toast.success('Data saved successfully!');
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/update-criteria`,
+        requestData
+      );
+      console.log("Grading sheet updated:", response.data);
+      toast.success("Data saved successfully!");
     } catch (error) {
-      console.error('Failed to save grading sheet:', error?.response?.data ? error.response.data : 'Unknown error');
-      toast.error('Failed to save data. ' + (error?.response?.data ? error.response.data : 'Please check your network or contact support.'));
+      console.error(
+        "Failed to save grading sheet:",
+        error?.response?.data ? error.response.data : "Unknown error"
+      );
+      toast.error(
+        "Failed to save data. " +
+          (error?.response?.data
+            ? error.response.data
+            : "Please check your network or contact support.")
+      );
     }
   };
-
-  /*
-
-  const handleExportButtonClick = () => {
-    const dataToExport = studentList.map((student, index) => {
-      const points = selectedPoints[student.groupname] || {};
-      const comments = selectedComments[student.groupname] || {};
-      const addcomments = additionalComments[student.groupname] || {};
-
-      const flattenedData = {};
-      criteriaList.forEach((criteria) => {
-        const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0; // Corrected asuId reference
-        const criteriaComment = comments[student.asuId]?.[criteria.criteria] || "";
-
-        flattenedData[`${criteria.criteria}_points`] =
-          criteria.points - criteriaPoints;
-        flattenedData[`${criteria.criteria}_comment`] =
-          criteria.deductions[index]?.comment;
-      });
-
-      let totalPoints = 0;
-      criteriaList.forEach((criteria) => {
-        totalPoints += flattenedData[`${criteria.criteria}_points`] || 0;
-      });
-
-      return { ...student, ...flattenedData, totalPoints };
-    });
-
-    const csvData = convertToCSV(dataToExport);
-    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, "studentDetails.csv");
-
-    toast.success("CSV exported successfully!");
-  };
-  */
-/*
-  const handleExportButtonClick = () => {
-    const dataToExport = studentList.map((student, index) => {
-      const points = selectedPoints[student.groupname] || {};
-      const comments = selectedComments[student.groupname] || {};
-      const addcomments = additionalComments[student.groupname]?.[student.asuId] || ""; // Fetch additional comment
-      console.log(criteriaList.length)
-      const flattenedData = {};
-      criteriaList.forEach((criteria) => {
-        const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0;
-        const criteriaComment = comments[student.asuId]?.[criteria.criteria] || "";
-        console.log(criteria.deductions[index]);
-        flattenedData[`${criteria.criteria}_points`] = criteria.points - criteriaPoints;
-        flattenedData[`${criteria.criteria}_comment`] = criteria.deductions[index]?.comment;
-      });
-  
-      let totalPoints = 0;
-      criteriaList.forEach((criteria) => {
-        totalPoints += flattenedData[`${criteria.criteria}_points`] || 0;
-      });
-  
-      return { ...student, ...flattenedData, additionalComment: addcomments, totalPoints };
-    });
-  
-    const csvData = convertToCSV(dataToExport);
-    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, "studentDetails.csv");
-  
-    toast.success("CSV exported successfully!");
-  };
-  */
 
   const handleExportButtonClick = () => {
     const dataToExport = studentList.map((student) => {
       const points = selectedPoints[student.groupname] || {};
       const comments = selectedComments[student.groupname] || {};
-      const addcomments = additionalComments[student.groupname]?.[student.asuId] || "";
-  
+      const addcomments =
+        additionalComments[student.groupname]?.[student.asuId] || "";
+
       const flattenedData = {};
-  
+
       criteriaList.forEach((criteria) => {
         const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0;
         const deductedPoints = criteria.points - criteriaPoints;
-        const deduction = criteria.deductions.find(d => parseInt(d.points) === criteriaPoints);
+        const deduction = criteria.deductions.find(
+          (d) => parseInt(d.points) === criteriaPoints
+        );
         const criteriaComment = deduction ? deduction.comment : "";
-  
+
         flattenedData[`${criteria.criteria}_points`] = criteriaPoints;
         flattenedData[`${criteria.criteria}_comment`] = criteriaComment;
       });
-  
+
       let totalPoints = 0;
       criteriaList.forEach((criteria) => {
         totalPoints += flattenedData[`${criteria.criteria}_points`] || 0;
       });
-  
-      return { ...student, ...flattenedData, additionalComment: addcomments, totalPoints };
+
+      const rowData = [
+        `GroupName: ${student.groupname}`,
+        `ASUID: ${student.asuid}`,
+        ...Object.entries(flattenedData).map(
+          ([criteria, value]) => `${criteria}: ${value}`
+        ),
+        `Additional Comments: ${addcomments}`,
+        `Total Points: ${totalPoints}`,
+      ].join(" | ");
+
+      return {
+        ...student,
+        ...flattenedData,
+        additionalComment: addcomments,
+        totalPoints,
+        rowData,
+      };
     });
-  
+
+    if (dataToExport.length <= 0) {
+      toast.error("No data to export!");
+      return;
+    }
     const csvData = convertToCSV(dataToExport);
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
     saveAs(blob, "studentDetails.csv");
-  
+
     toast.success("CSV exported successfully!");
   };
-  
 
-
-  
-  
   const [selectedCriteria, setSelectedCriteria] = useState([]);
 
   // Function to toggle selection of a criteria
@@ -327,8 +284,21 @@ const MainScreen = () => {
           selectedCriteria.deductions[0]?.comment || "", // Assuming you only need the comment of the first deduction
       };
 
+      // const rowData = [
+      //   `GroupName: ${student.groupname}`,
+      //   `ASUID: ${student.asuid}`,
+      //   ...Object.entries(flattenedData).map(
+      //     ([criteria, value]) => `${criteria}: ${value}`
+      //   ),
+      // ].join(" + ");
+
       return { ...student, ...flattenedData };
     });
+
+    if (dataToExport.length <= 0) {
+      toast.error("No data to export!");
+      return;
+    }
 
     const csvData = convertToCSV(dataToExport);
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
@@ -350,6 +320,10 @@ const MainScreen = () => {
   };
 
   const convertToCSV = (objArray) => {
+    if (objArray === undefined || null) {
+      return "";
+    }
+
     const array =
       typeof objArray !== "object" ? JSON.parse(objArray) : objArray;
     let str = "";
@@ -367,6 +341,7 @@ const MainScreen = () => {
 
       str += line + "\r\n";
     }
+    console.log("objArray:", objArray);
 
     return str;
   };
@@ -620,11 +595,11 @@ const MainScreen = () => {
 
                   {criteriaList.map((criteria, criteriaIndex) => {
                     const points =
-                      (selectedPoints[student.groupname] &&
-                        selectedPoints[student.groupname][student.asuId] &&
-                        selectedPoints[student.groupname][student.asuId][
-                          criteria.criteria
-                        ]);
+                      selectedPoints[student.groupname] &&
+                      selectedPoints[student.groupname][student.asuId] &&
+                      selectedPoints[student.groupname][student.asuId][
+                        criteria.criteria
+                      ];
                     let criteriaPoint = criteria.points - points;
                     totalPoints += parseInt(criteriaPoint);
                     return (
@@ -650,17 +625,23 @@ const MainScreen = () => {
                     );
                   })}
 
-<td className="NewComments">
-  <TextField
-    label="Additional Comment"
-    value={additionalComments[student.groupname]?.[student.asuId] || ""}
-    onChange={(e) =>
-      handleAdditionalCommentChange(student.groupname, student.asuId, e.target.value)
-    }
-  />
-</td>
-
-                
+                  <td className="NewComments">
+                    <TextField
+                      label="Additional Comment"
+                      value={
+                        additionalComments[student.groupname]?.[
+                          student.asuId
+                        ] || ""
+                      }
+                      onChange={(e) =>
+                        handleAdditionalCommentChange(
+                          student.groupname,
+                          student.asuId,
+                          e.target.value
+                        )
+                      }
+                    />
+                  </td>
 
                   <td>{totalPoints}</td>
                 </tr>
