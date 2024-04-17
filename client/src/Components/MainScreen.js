@@ -27,23 +27,39 @@ const MainScreen = () => {
     }, {}) || {}
   );
 
+  const [additionalComments, setAdditionalComments] = useState(
+    locationState.students?.reduce((acc, student) => {
+      acc[student.groupname] = {};
+      acc[student.groupname][student.asuId] = student.additionalComments || "";
+      return acc;
+    }, {}) || {}
+  );
+  
+  
+  
+
   const criteriaList = locationState.criteriaList || [];
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
   const [editingCriteriaIndex, setEditingCriteriaIndex] = useState(null);
-  const [newComments, setNewComments] = useState({});
   const handleEditButtonClick = (index) => {
     setEditingCriteriaIndex(index);
     setEditPopupOpen(true);
   };
  
 
-  const handleNewCommentChange = (asuId, value) => {
-    setNewComments((prevComments) => ({
+  const handleAdditionalCommentChange = (groupname, asuId, value) => {
+    setAdditionalComments((prevComments) => ({
       ...prevComments,
-      [asuId]: value,
+      [groupname]: {
+        ...prevComments[groupname],
+        [asuId]: value,
+      },
     }));
   };
+  
+  
+  
 
   const handleGroupNameEditButtonClick = (studentIndex) => {
     const studentToUpdate = studentList[studentIndex];
@@ -165,16 +181,18 @@ const MainScreen = () => {
     }
   };
 
+  /*
+
   const handleExportButtonClick = () => {
     const dataToExport = studentList.map((student, index) => {
       const points = selectedPoints[student.groupname] || {};
       const comments = selectedComments[student.groupname] || {};
+      const addcomments = additionalComments[student.groupname] || {};
 
       const flattenedData = {};
       criteriaList.forEach((criteria) => {
         const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0; // Corrected asuId reference
-        const criteriaComment =
-          comments[student.asuId]?.[criteria.criteria] || "";
+        const criteriaComment = comments[student.asuId]?.[criteria.criteria] || "";
 
         flattenedData[`${criteria.criteria}_points`] =
           criteria.points - criteriaPoints;
@@ -196,6 +214,76 @@ const MainScreen = () => {
 
     toast.success("CSV exported successfully!");
   };
+  */
+/*
+  const handleExportButtonClick = () => {
+    const dataToExport = studentList.map((student, index) => {
+      const points = selectedPoints[student.groupname] || {};
+      const comments = selectedComments[student.groupname] || {};
+      const addcomments = additionalComments[student.groupname]?.[student.asuId] || ""; // Fetch additional comment
+      console.log(criteriaList.length)
+      const flattenedData = {};
+      criteriaList.forEach((criteria) => {
+        const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0;
+        const criteriaComment = comments[student.asuId]?.[criteria.criteria] || "";
+        console.log(criteria.deductions[index]);
+        flattenedData[`${criteria.criteria}_points`] = criteria.points - criteriaPoints;
+        flattenedData[`${criteria.criteria}_comment`] = criteria.deductions[index]?.comment;
+      });
+  
+      let totalPoints = 0;
+      criteriaList.forEach((criteria) => {
+        totalPoints += flattenedData[`${criteria.criteria}_points`] || 0;
+      });
+  
+      return { ...student, ...flattenedData, additionalComment: addcomments, totalPoints };
+    });
+  
+    const csvData = convertToCSV(dataToExport);
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, "studentDetails.csv");
+  
+    toast.success("CSV exported successfully!");
+  };
+  */
+
+  const handleExportButtonClick = () => {
+    const dataToExport = studentList.map((student) => {
+      const points = selectedPoints[student.groupname] || {};
+      const comments = selectedComments[student.groupname] || {};
+      const addcomments = additionalComments[student.groupname]?.[student.asuId] || "";
+  
+      const flattenedData = {};
+  
+      criteriaList.forEach((criteria) => {
+        const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0;
+        const deductedPoints = criteria.points - criteriaPoints;
+        const deduction = criteria.deductions.find(d => parseInt(d.points) === criteriaPoints);
+        const criteriaComment = deduction ? deduction.comment : "";
+  
+        flattenedData[`${criteria.criteria}_points`] = criteriaPoints;
+        flattenedData[`${criteria.criteria}_comment`] = criteriaComment;
+      });
+  
+      let totalPoints = 0;
+      criteriaList.forEach((criteria) => {
+        totalPoints += flattenedData[`${criteria.criteria}_points`] || 0;
+      });
+  
+      return { ...student, ...flattenedData, additionalComment: addcomments, totalPoints };
+    });
+  
+    const csvData = convertToCSV(dataToExport);
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, "studentDetails.csv");
+  
+    toast.success("CSV exported successfully!");
+  };
+  
+
+
+  
+  
   const [selectedCriteria, setSelectedCriteria] = useState([]);
 
   // Function to toggle selection of a criteria
@@ -536,8 +624,7 @@ const MainScreen = () => {
                         selectedPoints[student.groupname][student.asuId] &&
                         selectedPoints[student.groupname][student.asuId][
                           criteria.criteria
-                        ]) ||
-                      criteria.points;
+                        ]);
                     let criteriaPoint = criteria.points - points;
                     totalPoints += parseInt(criteriaPoint);
                     return (
@@ -562,15 +649,18 @@ const MainScreen = () => {
                       </td>
                     );
                   })}
-                  <td className="NewComments">
-                    <TextField
-                      label="New Comment"
-                      value={newComments[student.asuid] || ""}
-                      onChange={(e) =>
-                        handleNewCommentChange(student.asuid, e.target.value)
-                      }
-                    />
-                  </td>
+
+<td className="NewComments">
+  <TextField
+    label="Additional Comment"
+    value={additionalComments[student.groupname]?.[student.asuId] || ""}
+    onChange={(e) =>
+      handleAdditionalCommentChange(student.groupname, student.asuId, e.target.value)
+    }
+  />
+</td>
+
+                
 
                   <td>{totalPoints}</td>
                 </tr>
