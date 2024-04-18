@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Typography, Select, MenuItem } from "@mui/material";
+import { Typography, Select, MenuItem } from "@mui/material";
 import { saveAs } from "file-saver";
 import "./MainScreen.css";
 import { IconButton, TextField } from "@mui/material";
@@ -8,7 +8,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
-import "./MainScreen.css";
 import axios from "axios";
 const MainScreen = () => {
   const locationState = useLocation().state || {};
@@ -202,7 +201,7 @@ const MainScreen = () => {
         );
         const criteriaComment = deduction ? deduction.comment : "";
 
-        flattenedData[`${criteria.criteria}_points`] = criteriaPoints;
+        flattenedData[`${criteria.criteria}_points`] = deductedPoints;
         flattenedData[`${criteria.criteria}_comment`] = criteriaComment;
       });
 
@@ -211,7 +210,7 @@ const MainScreen = () => {
         totalPoints += flattenedData[`${criteria.criteria}_points`] || 0;
       });
 
-      const rowData = [
+      const CombinedData = [
         `GroupName: ${student.groupname}`,
         `ASUID: ${student.asuid}`,
         ...Object.entries(flattenedData).map(
@@ -226,7 +225,7 @@ const MainScreen = () => {
         ...flattenedData,
         additionalComment: addcomments,
         totalPoints,
-        rowData,
+        CombinedData,
       };
     });
 

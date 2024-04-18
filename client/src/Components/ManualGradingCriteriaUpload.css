@@ -1,54 +1,44 @@
-/* ManualGradingCriteriaUpload.css */
-
 .manual-grading-criteria-upload {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #f4f4f4;
-  padding: 20px;
 }
 
 .criteria-container {
-  width: 100%;
-  max-width: 800px;
-  
-  border-radius: 8px;
+  margin-bottom: 20px;
   padding: 20px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.criteria-heading {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.textfield {
-  width: 100%;
-  margin-bottom: 15px;
-  
+  border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 10px;
-  
+  background-color: #f9f9f9;
+  width: 50%;
 }
 
 .deduction-container {
   display: flex;
   align-items: center;
-  
-  gap: 10px;
-  padding: 1%;
+  margin-top: 10px;
 }
 
 .delete-icon {
-  color: goldenrod;
-  cursor: pointer;
-  transition: color 0.3s ease;
+  margin-left: 10px;
 }
 
-.delete-icon:hover {
-  
-  color: #8C1D40;
+.add-deduction-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #8c1d40;
+  color: goldenrod;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-deduction-button:hover {
+  background-color: #6e142c;
+}
+
+@media (max-width: 768px) {
+  .criteria-container {
+    width: 80%;
+  }
 }
