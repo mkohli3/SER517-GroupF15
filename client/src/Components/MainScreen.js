@@ -11,20 +11,22 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 const MainScreen = () => {
   const locationState = useLocation().state || {};
+  console.log("locationState:", locationState);
 
   const [studentList, setStudentList] = useState(locationState.students || []);
   const [selectedPoints, setSelectedPoints] = useState(
     locationState.students?.reduce((acc, student) => {
-      acc[student.groupname] = student.points;
+      acc[student.groupname] = student.points || {};
       return acc;
     }, {}) || {}
   );
   const [selectedComments, setSelectedComments] = useState(
     locationState.students?.reduce((acc, student) => {
-      acc[student.groupname] = student.comments;
+      acc[student.groupname] = student.comments || {};
       return acc;
     }, {}) || {}
   );
+
 
   const [additionalComments, setAdditionalComments] = useState(
     locationState.students?.reduce((acc, student) => {
@@ -566,11 +568,8 @@ const MainScreen = () => {
           </tr>
         </thead>
         <tbody>
-          {studentList &&
-            // Inside the table body rendering logic
-            studentList.map((student, studentIndex) => {
-              // Calculate total points for each student
-              let totalPoints = 0; // Initialize total points for the student
+        {studentList && Array.isArray(studentList) && criteriaList && Array.isArray(criteriaList) && studentList.map((student, studentIndex) => { 
+          let totalPoints = 0;// Calculate total points for each student let totalPoints = 0;// Initialize total points for the student
               return (
                 <tr key={studentIndex}>
                   <td>
