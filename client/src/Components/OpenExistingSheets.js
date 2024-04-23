@@ -20,13 +20,10 @@ const OpenExistingSheet = ({ onSheetSelect, setShowOpenExistingSheet }) => {
   };
 
   const handleSheetSelect = (sheet) => {
-    const sheetData = {
-      ...sheet,
-      criteriaList: sheet.gradingCriteria,
-    };
-    navigate('/main-screen', { state: sheetData });
+    navigate('/main-screen', { state: sheet });
     setShowOpenExistingSheet(false);
   };
+
   const handleSheetDelete = async (sheetId) => {
     try {
       await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/${sheetId}`);

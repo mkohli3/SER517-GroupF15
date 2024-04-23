@@ -100,7 +100,7 @@ router.post('/import-criteria', upload.single('excelFile'), async (req, res) => 
 // Route to fetch a specific grading sheet by ID
 router.get('/:id', async (req, res) => {
   try {
-    const sheet = await GradingSheet.findById(req.params.id).populate('students.points students.comments');
+    const sheet = await GradingSheet.findById(req.params.id);
     if (!sheet) {
       return res.status(404).json({ message: 'Grading sheet not found' });
     }
