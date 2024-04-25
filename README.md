@@ -81,17 +81,17 @@ Features to be implemented:
         {
           "criteriaName": "Participation",
           "points": 10,
-          "criteriaType": "individual"
+          "type": "individual"
         },
         {
           "criteriaName": "Project Presentation",
           "points": 30,
-          "criteriaType": "group"
+          "type": "group"
         },
         {
           "criteriaName": "Final Report",
           "points": 60,
-          "criteriaType": "group"
+          "type": "group"
         }
       ]
     }

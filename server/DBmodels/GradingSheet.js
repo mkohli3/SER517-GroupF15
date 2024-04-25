@@ -1,34 +1,35 @@
 const mongoose = require('mongoose');
 
-const gradingScopeSchema = new mongoose.Schema({
-  scopeType: {
-    type: String,
-    required: true,
-    enum: ['group', 'individual', 'both'],
-  },
-  gradingScale: {
-    type: Map,
-    of: String,
-  },
-  rubricDetails: [String],
-}, { _id: false }); 
-
 const gradingCriteriaSchema = new mongoose.Schema({
-  criteriaName: { type: String, required: [true, 'Criteria name is required'] },
+  criteria: { type: String, required: [true, 'Criteria name is required'] },
   points: { type: Number, required: [true, 'Points are required'], min: [0, 'Points cannot be negative'] },
-  criteriaType: { type: String, required: [true, 'Criteria type is required'], enum: ['group', 'individual'] },
+  type: { type: String, required: [true, 'Criteria type is required']},
+  deductions: [
+    {
+      points: { type: Number, required: [true, 'Deduction points are required'] },
+      comment: { type: String, default: '' }
+    }
+  ]
+});
+
+const studentSchema = new mongoose.Schema({
+  groupname: { type: String, required: [true, 'Group name is required'] },
+  asuid: { type: String, required: [true, 'ASU ID is required'] },
+  points: [
+    {
+      criteria: { type: String, required: true },
+      points: { type: Number, required: true },
+      comment: { type: String, default: '' }
+    }
+  ],
+  additionalComments: { type: String, default: '' },
+  totalPoints: { type: Number, required: true }
 });
 
 const gradingSheetSchema = new mongoose.Schema({
   title: { type: String, required: [true, 'Title is required'] },
   gradingCriteria: [gradingCriteriaSchema],
-  students: [
-    {
-      groupname: { type: String, required: [true, 'Group name is required'] },
-      asuid: { type: String, required: [true, 'ASU ID is required'] },
-      points: { type: Map, of: mongoose.Schema.Types.Mixed },
-      comments: { type: Map, of: mongoose.Schema.Types.Mixed },
-    },
-  ],
+  students: [studentSchema]
 });
+
 module.exports = mongoose.model('GradingSheet', gradingSheetSchema);

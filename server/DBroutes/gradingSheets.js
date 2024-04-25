@@ -23,6 +23,7 @@ const upload = multer({
 
 // Route to create or update a grading sheet based on ID
 router.post('/create-or-update', async (req, res) => {
+
   const { id, title, gradingCriteria } = req.body;
   try {
     let sheet;
@@ -37,12 +38,14 @@ router.post('/create-or-update', async (req, res) => {
     const savedSheet = await sheet.save();
     res.status(201).json(savedSheet);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: error.message });
   }
 });
 
 // Route to add or update criteria for a specific grading sheet
 router.post('/update-criteria', async (req, res) => {
+  
   const { id, title, gradingCriteria, students } = req.body;
   try {
     let sheet;
@@ -59,7 +62,9 @@ router.post('/update-criteria', async (req, res) => {
     sheet.students = students;
     const updatedSheet = await sheet.save();
     res.status(200).json(updatedSheet);
+    
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: error.message });
   }
 });

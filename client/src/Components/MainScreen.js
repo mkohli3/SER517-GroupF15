@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Typography, Select, MenuItem } from "@mui/material";
 import { saveAs } from "file-saver";
 import "./MainScreen.css";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton, TextField, Box  } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,8 +12,80 @@ import axios from "axios";
 const MainScreen = () => {
   const locationState = useLocation().state || {};
   
+  const [title, setTitle] = useState('');
 
-  const [studentList, setStudentList] = useState(locationState.students || []);
+  const [studentList, setStudentList] = useState([]);
+  const [criteriaList, setCriteriaList] = useState([]);
+
+  useEffect(() => {
+    if (locationState.origin === 'openExistingSheet') {
+      console.log(locationState.sheet)
+      setTitle(locationState.sheet.title || '');
+      setCriteriaList(locationState.sheet.gradingCriteria || '');
+      
+  
+      const updatedStudentList = locationState.sheet.students.map((student) => ({
+        groupname: student.groupname,
+        asuid: student.asuid,
+      }));
+      setStudentList(updatedStudentList);
+  
+      const initialSelectedPoints = {};
+      const initialSelectedComments = {};
+      const initialAdditionalComments = {};
+  
+      locationState.sheet.students.forEach((student) => {
+        const points = {};
+        const comments = {};
+  
+        student.points.forEach((point) => {
+          const totalPoints = parseInt(
+            criteriaList.find((c) => c.criteria === point.criteria)?.points || 0
+          ); // Use the updated criteriaList here
+          points[point.criteria] = totalPoints - point.points;
+          comments[point.criteria] = point.comment;
+        });
+  
+        initialSelectedPoints[student.groupname] = {
+          ...initialSelectedPoints[student.groupname],
+          [student.asuId]: points,
+        };
+  
+        initialSelectedComments[student.groupname] = {
+          ...initialSelectedComments[student.groupname],
+          [student.asuId]: comments,
+        };
+  
+        initialAdditionalComments[student.groupname] = {
+          ...initialAdditionalComments[student.groupname],
+          [student.asuId]: student.additionalComments || "",
+        };
+      });
+  
+      // Use functional form of setState to ensure state updates are based on the latest criteriaList
+      setSelectedPoints((prevSelectedPoints) => ({
+        ...prevSelectedPoints,
+        ...initialSelectedPoints,
+      }));
+  
+      setSelectedComments((prevSelectedComments) => ({
+        ...prevSelectedComments,
+        ...initialSelectedComments,
+      }));
+  
+      setAdditionalComments((prevAdditionalComments) => ({
+        ...prevAdditionalComments,
+        ...initialAdditionalComments,
+      }));
+    }
+
+    if (locationState.origin === 'manualUpload' || locationState.origin === 'csvupload') {
+      setCriteriaList(locationState.criteriaList);
+    }
+  }, [locationState, criteriaList]); // Add criteriaList to the dependency array
+  
+
+  
   const [selectedPoints, setSelectedPoints] = useState(
     locationState.students?.reduce((acc, student) => {
       acc[student.groupname] = student.points || {};
@@ -26,6 +98,8 @@ const MainScreen = () => {
       return acc;
     }, {}) || {}
   );
+ 
+
 
 
   const [additionalComments, setAdditionalComments] = useState(
@@ -36,7 +110,6 @@ const MainScreen = () => {
     }, {}) || {}
   );
 
-  const criteriaList = locationState.criteriaList || [];
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [isEditPopupOpen, setEditPopupOpen] = useState(false);
   const [editingCriteriaIndex, setEditingCriteriaIndex] = useState(null);
@@ -101,6 +174,8 @@ const MainScreen = () => {
       onClose();
     };
 
+   
+
     return (
       isOpen && (
         <div className="popup">
@@ -139,57 +214,94 @@ const MainScreen = () => {
   };
 
   const handleSaveButtonClick = async () => {
-    const studentsWithPoints = studentList.map((student) => {
-      const points = selectedPoints[student.groupname] || {};
-      const comments = selectedComments[student.groupname] || {};
-      return { ...student, points, comments };
-    });
-
+    if (!title.trim()) {
+      toast.error("Please Add the Sheet Name");
+      return; // Don't proceed further
+    }
     try {
-      let title = studentList[0]?.groupname || "Untitled";
-
-      if (!title || title.trim() === "") {
-        title = "Untitled";
-      }
-
       const requestData = {
         title: title,
         gradingCriteria: criteriaList.map((criteria) => ({
-          criteriaName: criteria.criteria,
+          criteria: criteria.criteria,
           points: criteria.points,
-          criteriaType: criteria.type.toLowerCase(),
+          type: criteria.type,
+          deductions: criteria.deductions.map((deduction) => ({
+            points: deduction.points,
+            comment: deduction.comment,
+          })),
         })),
-        students: studentsWithPoints,
+        students: studentList.map((student) => {
+          const points = selectedPoints[student.groupname] || {};
+          const addComments = additionalComments[student.groupname]?.[student.asuId] || "";
+  
+          const studentPoints = criteriaList.map((criteria) => {
+            const criteriaPoints = points[student.asuId]?.[criteria.criteria] || 0;
+            const deductedPoints = criteria.points - criteriaPoints;
+            const deduction = criteria.deductions.find(
+              (d) => parseInt(d.points) === deductedPoints
+            );
+            const criteriaComment = deduction ? deduction.comment : "";
+            return {
+              criteria: criteria.criteria,
+              points: deductedPoints,
+              comment: criteriaComment,
+            };
+          });
+  
+          
+     
+          let totalPoints = studentPoints.reduce((acc, curr) => acc + curr.points, 0);
+          
+          return {
+            groupname: student.groupname,
+            asuid: student.asuid,
+            additionalComments: addComments,
+            points: studentPoints,
+            totalPoints
+          };
+        }),
       };
 
+      console.log(requestData);
+
+      
+      
+  
       if (locationState && locationState._id) {
         requestData.id = locationState._id;
       }
-
+      
+     
+  
+    
+  
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/update-criteria`,
         requestData
       );
-      console.log("Grading sheet updated:", response.data);
-      toast.success("Data saved successfully!");
+
+     
+      
+    
+  
+      if (response.data && response.status == 200) {
+        toast.success("Data saved successfully!");
+      } else {
+        toast.error("Failed to save data.");
+      }
     } catch (error) {
-      console.error(
-        "Failed to save grading sheet:",
-        error?.response?.data ? error.response.data : "Unknown error"
-      );
-      toast.error(
-        "Failed to save data. " +
-          (error?.response?.data
-            ? error.response.data
-            : "Please check your network or contact support.")
-      );
+      console.error("Failed to save grading sheet:", error);
+      toast.error("Failed to save data. Please check your network or contact support.");
     }
   };
+  
+
+
 
   const handleExportButtonClick = () => {
     const dataToExport = studentList.map((student) => {
       const points = selectedPoints[student.groupname] || {};
-      const comments = selectedComments[student.groupname] || {};
+      //const comments = selectedComments[student.groupname] || {};
       const addcomments =
         additionalComments[student.groupname]?.[student.asuId] || "";
 
@@ -237,7 +349,7 @@ const MainScreen = () => {
     }
     const csvData = convertToCSV(dataToExport);
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, "studentDetails.csv");
+    saveAs(blob, "ExportedResult.csv");
 
     toast.success("CSV exported successfully!");
   };
@@ -308,17 +420,7 @@ const MainScreen = () => {
     toast.success(`CSV exported successfully for '${criteriaToExport}'.`);
   };
 
-  // Function to calculate total points for a student group
-  const getTotalPoints = (groupName) => {
-    let totalPoints = 0;
-    const points = selectedPoints[groupName] || {};
-    for (const studentId in points) {
-      for (const criteria in points[studentId]) {
-        totalPoints += parseInt(points[studentId][criteria]);
-      }
-    }
-    return totalPoints;
-  };
+  
 
   const convertToCSV = (objArray) => {
     if (objArray === undefined || null) {
@@ -342,7 +444,7 @@ const MainScreen = () => {
 
       str += line + "\r\n";
     }
-    console.log("objArray:", objArray);
+    
 
     return str;
   };
@@ -358,7 +460,7 @@ const MainScreen = () => {
     const totalPoints = parseInt(
       criteriaList.find((c) => c.criteria === criteria)?.points
     );
-    const deduction = totalPoints - parseInt(value);
+    const deduction = parseInt(value);
 
     // Find the deduction corresponding to the calculated deduction for the specific criterion
     const deductionPoints =
@@ -486,9 +588,9 @@ const MainScreen = () => {
               />
             </div>
             <div className="input-container">
-              <label htmlFor="criteriaType">Criteria Type:</label>
+              <label htmlFor="type">Criteria Type:</label>
               <Select
-                id="criteriaType"
+                id="type"
                 name="type"
                 value={editedCriteria.type}
                 onChange={handleInputChange}
@@ -538,17 +640,38 @@ const MainScreen = () => {
     );
   };
 
+  const handleSheetNameChange = (e) => {
+    setTitle(e.target.value);  // Update the title with the entered sheet name
+  };
+
   return (
     <div>
       <ToastContainer />
 
-      <Typography
-        component="h2"
-        variant="h5"
-        className="asu-typography center-text"
-      >
-        Grading Criteria Display
-      </Typography>
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        
+        
+        <Typography
+          component="h2"
+          variant="h5"
+          className="asu-typography"
+        >
+          Grading Tool
+        </Typography>
+
+        <Box width="20%" ml={2}>
+          <TextField
+            variant="outlined"
+            placeholder="Sheet Name"
+            size="small"
+            value={title}
+            onChange={handleSheetNameChange}
+            fullWidth
+          />
+        </Box>
+      </Box>  
+
+      
       <table className="main-screen-table">
         <thead>
           <tr>
@@ -595,6 +718,7 @@ const MainScreen = () => {
                   </td>
 
                   {criteriaList.map((criteria, criteriaIndex) => {
+                    
                     const points =
                       selectedPoints[student.groupname] &&
                       selectedPoints[student.groupname][student.asuId] &&
@@ -603,6 +727,7 @@ const MainScreen = () => {
                       ];
                     let criteriaPoint = criteria.points - points;
                     totalPoints += parseInt(criteriaPoint);
+                    
                     return (
                       <td key={criteriaIndex}>
                         <Select

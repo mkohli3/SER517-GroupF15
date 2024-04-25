@@ -20,7 +20,9 @@ const OpenExistingSheet = ({ onSheetSelect, setShowOpenExistingSheet }) => {
   };
 
   const handleSheetSelect = (sheet) => {
-    navigate('/main-screen', { state: sheet });
+    navigate('/main-screen', { state: {sheet, origin: 'openExistingSheet' }});
+
+    //navigate('/main-screen', { state: { criteriaList, origin: 'manualUpload' } });
     setShowOpenExistingSheet(false);
   };
 

@@ -41,7 +41,7 @@ const CSVUpdate = () => {
 
   const handleStartGrading = () => {
     // Implement the navigation logic if necessary
-    navigate('/main-screen', { state: { criteriaList } });
+    navigate('/main-screen', { state: { criteriaList, origin: 'csvupload'  } });
   };
 
   return (
