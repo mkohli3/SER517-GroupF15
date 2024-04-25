@@ -42,16 +42,22 @@ Features to be implemented:
 7. After grading is done, choice is available to save the grading criteria and also to export the grading sheet as a CSV file.
 
 ### Setting Up the MongoDB(Using HomeBrew)
-1. Install MongoDB
-# Tap the MongoDB formulae
-brew tap mongodb/brew
-
-# Install MongoDB
-brew install mongodb/brew/mongodb-community
-
-2. Start the Server
-brew services start mongodb/brew/mongodb-community
-
+1. Tap the MongoDB formulae
+  ```bash
+   brew tap mongodb/brew
+   ```
+2. Install MongoDB
+  ```bash
+   brew install mongodb/brew/mongodb-community
+   ```
+3. Start the Server
+  ```bash
+   brew services start mongodb/brew/mongodb-community
+   ```
+4. Stop the Server
+  ```bash
+   brew stop start mongodb/brew/mongodb-community
+   ```
 
 ### Setting Up the Server
 
