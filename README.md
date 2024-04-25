@@ -40,6 +40,19 @@ Features to be implemented:
 6. In the /utils folder of the source code, example files for Criteria upload ```Criteria.csv``` in the first step of creating a new sheet and an example file for uploading Student details ```Students.csv``` has been provided. 
  
 7. After grading is done, choice is available to save the grading criteria and also to export the grading sheet as a CSV file.
+
+### Setting Up the MongoDB(Using HomeBrew)
+1. Install MongoDB
+# Tap the MongoDB formulae
+brew tap mongodb/brew
+
+# Install MongoDB
+brew install mongodb/brew/mongodb-community
+
+2. Start the Server
+brew services start mongodb/brew/mongodb-community
+
+
 ### Setting Up the Server
 
 1. Navigate to the server directory:
