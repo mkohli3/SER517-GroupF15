@@ -29,18 +29,13 @@ function ManualEntry() {
 
   const saveGradingCriteria = async () => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/save-criteria`, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/grading-sheets/create-or-update`, {
         title: 'Example Title',
-        serialNo: 1,
-        ASUriteId: 'asu123',
-        StudentName: 'John Doe',
         gradingCriteria: criteriaList,
-        individualPoints,
       });
-
       console.log('Criteria saved:', response.data);
       alert('Grading criteria saved successfully!');
-    } catch (error) {
+    } catch (error)  {
       console.error('Failed to save grading criteria:', error?.response?.data ? error.response.data : 'Unknown error');
       alert('Failed to save grading criteria. ' + (error?.response?.data ? error.response.data : 'Please check your network or contact support.'));
     }

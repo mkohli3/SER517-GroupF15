@@ -1,77 +1,14 @@
 /* MainScreen.css enhancements for ASU theme */
 
+/* General styles */
 .main-screen-table {
   font-family: Arial, sans-serif;
   width: 100%;
   border-collapse: collapse;
 }
 
-.main-screen-table thead {
-  background-color: goldenrod; /* ASU Maroon */
-  color: #8C1D40; /* ASU Gold */
-}
-
-
-.main-screen-table th,
-.main-screen-table td {
-  text-align: left;
-  padding: 8px;
-  border: 1px solid #ddd;
-}
-
 .center-text {
   text-align: center;
-}
-
-/* Button styling to match ASU colors */
-.asu-button {
-  background-color: #8C1D40; /* ASU Maroon */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  text-transform: uppercase;
-}
-.asu-button:hover {
-  background-color: goldenrod; /* A lighter maroon for hover effect */
-}
-
-
-.asu-typography {
-  background-color: #8C1D40;
-  color: goldenrod; /* ASU Maroon */
-}
-
-.popup {
-  position: fixed;
-  width: 500px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border: 2px solid goldenrod; /* ASU Maroon color */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  
-}
-
-.popup-content {
-  text-align: center;
-  
-}
-
-.popup button {
-  background-color: #8C1D40;
-  color: goldenrod;
-  
-  padding: 10px 20px;
-  cursor: pointer;
-  
-}
-
-.popup button:hover {
-  background-color:goldenrod; 
-  color: #8C1D40;/* Lighter maroon for hover effect */
 }
 
 .input-container {
@@ -93,27 +30,69 @@
   margin-bottom: 10px;
 }
 
-.asu-button {
-  background-color: #8C1D40; /* ASU Maroon */
-  color: goldenrod;
+/* Table styles */
+.main-screen-table thead {
+  background-color: goldenrod; /* ASU Maroon */
+  color: #8c1d40; /* ASU Gold */
+}
+
+.main-screen-table th,
+.main-screen-table td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.asu-button,
+#csv-upload-label {
+  background-color: #8c1d40; /* ASU Maroon */
+  color: goldenrod; /* ASU Gold */
   border: none;
   padding: 10px 20px;
   cursor: pointer;
 }
 
 .asu-button:hover {
-  background-color: goldenrod; 
-  color: #8C1D40;/* A lighter maroon for hover effect */
+  background-color: goldenrod; /* A lighter maroon for hover effect */
+  color: #8c1d40; /* ASU Maroon */
 }
 
-#csv-upload-label {
-  background-color: #8C1D40; 
-  color: goldenrod;
-  border: none;
-  padding: 10px 20px;
+/* Popup styles */
+.popup {
+  position: absolute;
+  width: 500px;
+  top: 50%;
+  left: 50%;
+  max-height: 600px;
+  overflow-y: auto;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 2px solid goldenrod; /* ASU Maroon color */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+button {
+  background-color: #8c1d40; /* ASU Maroon */
+  color: goldenrod; /* ASU Gold */
+  padding: 10px 10px;
   cursor: pointer;
+  /* Maintain fixed width */
+
+  border: none;
+  border-radius: 5px;
 }
 
-#csv-upload-label:hover {
-  background-color: #8C1D40; /* A lighter maroon for hover effect */
+button:hover {
+  background-color: goldenrod; /* A lighter maroon for hover effect */
+  color: #8c1d40; /* ASU Maroon */
+  /* Maintain fixed width */
+
+  border: none;
+  border-radius: 5px;
 }

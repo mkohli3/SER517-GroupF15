@@ -57,8 +57,7 @@ function ManualGradingCriteriaUpload() {
   };
 
   const handleSaveButtonClick = () => {
-    console.log(criteriaList);
-    navigate('/main-screen', { state: { criteriaList: criteriaList } });
+    navigate('/main-screen', { state: { criteriaList, origin: 'manualUpload' } });
   };
 
   const renderCriteriaInputs = () => {
