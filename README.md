@@ -56,7 +56,7 @@ Features to be implemented:
    ```
 4. Stop the Server
   ```bash
-   brew stop start mongodb/brew/mongodb-community
+   brew services stop mongodb/brew/mongodb-community
    ```
 
 ### Setting Up the Server
